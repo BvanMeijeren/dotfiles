@@ -1,116 +1,92 @@
 
 {
-  "layer": "top",
-    "position": "top",
-    "margin-bottom": 0,
-    "modules-left": [
-      "clock",
+  "position": "top",
+  "margin-bottom": 0,
+  "modules-left": [
       "hyprland/workspaces",
       "custom/updates",
-      "tray",
-      ],
-    "modules-center": [
-      "hyprland/window",
-      ],
-    "modules-right": [
-      "network",
-      "temperature",
-      "memory",
-      "cpu",
-      "pulseaudio",
-      "custom/powermenu",
-    ],
-    "tray": {
-      "icon-size": 24,
-      "spacing": 10
+      "tray"
+  ],
+  "modules-center": [
+    "hyprland/window"
+  ],
+  "modules-right": [
+    "network",
+    "pulseaudio",
+    "battery",
+    "clock",
+    "custom/powermenu"
+  ],
+  "clock": {
+    "format": "<span foreground='#f5c2e7'>   </span>{:%a %d %H:%M}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+    "interval": 60
+  },
+  "battery": {
+    "states": {
+      "warning": 30,
+      "critical": 15
     },
-    "hyprland/window": {
-      "format": " {}",
-      "rewrite": {
-          "(\\d\\. )?(.*) - Chromium": "<span color=\"#4285F4\"></span>  $2 ",
-          "nvim (.*)": "<span color=\"#57A143\"></span>  $1",
-          "nvim": "<span color=\"#57A143\">  Neovim</span> ",
-          "ranger(.*)": "<span color=\"#ffffff\"></span>  $1",
-          //"kitty (.*)": "<span color=\"#ffffff\"></span>  $1",
-          "Search(.*)": "<span color=\"#a855f7\"></span>  Search$1",
-      },
-      "separate-outputs": false
+    "format": "<span size='13000' foreground='#a6e3a1'>{icon} </span> {capacity}%",
+    "format-warning": "<span size='13000' foreground='#B1E3AD'>{icon} </span> {capacity}%",
+    "format-critical": "<span size='13000' foreground='#E38C8F'>{icon} </span> {capacity}%",
+    "format-charging": "<span size='13000' foreground='#B1E3AD'> </span>{capacity}%",
+    "format-plugged": "<span size='13000' foreground='#B1E3AD'> </span>{capacity}%",
+    "format-alt": "<span size='13000' foreground='#B1E3AD'>{icon} </span> {time}",
+    "format-full": "<span size='13000' foreground='#B1E3AD'> </span>{capacity}%",
+    "format-icons": ["", "", "", "", ""],
+    "tooltip-format": "{time}"
+  },
+  "network": {
+    "format-wifi": "<span size='13000' foreground='#f5e0dc'>  </span>{essid}",
+    "format-ethernet": "<span size='13000' foreground='#f5e0dc'>󰤭  </span> Disconnected",
+    "format-linked": "{ifname} (No IP) ",
+    "format-disconnected": "<span size='13000' foreground='#f5e0dc'>  </span>Disconnected",
+    "tooltip-format-wifi": "Signal Strenght: {signalStrength}%"
+  },
+  "pulseaudio": {
+    "format": "{icon}  {volume}%",
+    "format-muted": "",
+    "format-icons": {
+      "default": ["", "", ""]
     },
-    "hyprland/submap": {
-      "format": "✌️ {}",
-      "max-length": 8,
-      "tooltip": true
-    },
-    "hyprland/workspaces": {
-      "format": "{icon}",
-      "format-icons": {
-        "1": "󰲠",
-        "2": "󰲢",
-        "3": "󰲤",
-        "4": "󰲦",
-        "5": "󰲨",
-        "6": "󰲪",
-        "7": "󰲬",
-        "8": "󰲮",
-        "9": "󰲰",
-        "10": "󰿬",
-        "-99": "",
-        "active": "",
-        "default": ""
-      }
-    },
-    "network": {
-      "interface": "enp34s0",
-      "tooltip-format-ethernet": "{ifname} ",
-      "interval": 2,
-      "format": " {bandwidthDownBits}  {bandwidthUpBits}",
-    },
-    "temperature": {
-      "format": "{icon} {temperatureC}°C",
-      "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
-      "critical-threshold": 80,
-      "format-icons": ["", "", ""]
-    },
-    "memory": {
-      "format": " {}%",
-      "tooltip": "false"
-    },
-    "cpu": {
-      "format": " {usage}%",
-      "tooltip": "false"
-    },
-    "custom/powermenu": {
-      "format": "",
-      "tooltip": false,
-      "on-click": "exec wlogout -p layer-shell",
-    },
-    "custom/updates": {
-      "format": "<span color=\"#61afef\"></span> {}",
-      "tooltip": false,
-      "interval": 3600,
-      "exec": "exec $HOME/.config/waybar/checkupdate.sh"
-    },
-    "pulseaudio": {
-      "format": "{volume}% {icon}",
-      "format-bluetooth": "{volume}% {icon}",
-      "format-muted": "",
-      "format-icons": {
-          "headphone": "",
-          "hands-free": "",
-          "headset": "",
-          "phone": "",
-          "portable": "",
-          "car": "",
-          "default": ["", ""]
-      },
-      "scroll-step": 1,
-      "on-click": "pavucontrol"
-    },
-    "clock": {
-      //"format": "<span color=\"#56b6c2\"></span> {:%H:%M}",
-      "format": "{:%H:%M}",
-      "interval": 60,
-      "tooltip": true,
-      "tooltip-format": "{:%d %B %H:%M}"
+    "on-click": "pavucontrol"
+  },
+
+"hyprland/window": {
+  "format": "{}",
+  "rewrite": {
+    "(\\d\\. )?(.*) - Chromium": "<span color=\"#4285F4\"></span>  $2",
+    "nvim (.*)": "<span color=\"#57A143\"></span>  $1",
+    "ranger(.*)": "<span color=\"#ffffff\"></span>  $1",
+    "Search(.*)": "<span color=\"#a855f7\"></span>  Search$1"
+  },
+  "separate-outputs": true
+},
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "format-icons": {
+      "1": "󰲠",
+      "2": "󰲢",
+      "3": "󰲤",
+      "4": "󰲦",
+      "5": "󰲨",
+      "6": "󰲪",
+      "7": "󰲬",
+      "8": "󰲮",
+      "9": "󰲰",
+      "10": "󰿬",
+      "-99": "",
+      "active": "",
+      "default": ""
     }
+  },
+"custom/powermenu": {
+  "format": "<span size='15000' foreground='#f38ba8'></span>",
+  "tooltip": "Shutdown",
+  "on-click": "exec zenity --question --text='Are you sure you want to shutdown?' --width=300 --height=100 --title='Shutdown Confirmation' --ok-label='Yes' --cancel-label='No' --window-icon='error' && pkexec systemctl poweroff",
+  "margin": {
+    "right": 10
+  }
+}
 }
