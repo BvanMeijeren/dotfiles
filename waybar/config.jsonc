@@ -14,8 +14,7 @@
     "network",
     "pulseaudio",
     "battery",
-    "clock",
-    "custom/powermenu"
+    "clock"
   ],
   "clock": {
     "format": "<span foreground='#f5c2e7'>   </span>{:%a %d %H:%M}",
