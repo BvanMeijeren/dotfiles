@@ -31,6 +31,12 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Keymaps for managing splits
+vim.keymap.set('n', '<leader>tn', ':tabnew<CR>', { desc = 'Open a new tab' })
+vim.keymap.set('n', '<leader>tj', ':tabnext<CR>', { desc = 'Open a new tab' })
+vim.keymap.set('n', '<leader>tk', ':tabprevious<CR>', { desc = 'Open a new tab' })
+vim.keymap.set('n', '<leader>to', ':tabonly<CR>', { desc = 'Open a new tab' })
+
 -- Key mappings for Code Runner
 vim.api.nvim_set_keymap('n', '<leader>rr', ':RunCode<CR>', { noremap = true, silent = true }) -- Run the current file
 vim.api.nvim_set_keymap('n', '<leader>rc', ':RunClose<CR>', { noremap = true, silent = true }) -- Run the current file and close output
