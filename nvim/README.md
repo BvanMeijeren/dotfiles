@@ -27,6 +27,7 @@ External Requirements:
   - If you want to write Typescript, you need `npm`
   - If you want to write Golang, you will need `go`
   - etc.
+- lazygit
 
 SQL
 - brew install [postgresql]  (postgresql-client on linux with apt install)
