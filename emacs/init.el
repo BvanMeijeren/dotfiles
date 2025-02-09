@@ -223,13 +223,20 @@
 ;;(use-package python-mode
   ;;:mode "\\.py\\'")
 
-(defun my-python-eval-region ()
-  "Send the selected region to the Python REPL."
-  (interactive)
-  (python-shell-send-region (region-beginning) (region-end)))
+(use-package pyvenv
+  :config
+  ;;(setenv "WORKON_HOME" "~/.venv/") ;; Set location of venvs if not in project dir
+  (pyvenv-mode 1)) ;; Enable pyvenv globally
 
-(with-eval-after-load 'python
-  (define-key python-mode-map (kbd "C-c C-e") 'my-python-eval-region))
+(defun my-python-eval-region-or-line ()
+  "Evaluate the selected region or the current line in Python, displaying results in a small window."
+  (interactive)
+  (unless (python-shell-get-process)
+    (run-python))  ;; Ensure Python shell is running
+  (let ((code (if (use-region-p)
+                  (buffer-substring-no-properties (region-beginning) (region-end))
+                (thing-at-point 'line t))))
+    (python-shell-send-string code)))
 
 ;;(use-package sql-mode
  ;; :mode "//.sql//'")

@@ -382,13 +382,17 @@ Use SPC-tab to uncomment the lines.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp 
-(defun my-python-eval-region ()
-  "Send the selected region to the Python REPL."
+(defun my-python-eval-region-or-line ()
+  "Evaluate the selected region or the current line in Python, displaying results in a small window."
   (interactive)
-  (python-shell-send-region (region-beginning) (region-end)))
-
-(with-eval-after-load 'python
-  (define-key python-mode-map (kbd "C-c C-e") 'my-python-eval-region))
+  (let ((output-buffer (get-buffer-create "*Python Output*"))
+        (code (if (use-region-p)
+                  (buffer-substring-no-properties (region-beginning) (region-end))
+                (thing-at-point 'line t))))
+    (with-current-buffer output-buffer
+      (erase-buffer)) ;; Clear previous output
+    (python-shell-send-string code) ;; Removed output-buffer argument
+    (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
 #+END_SRC
 *** SQL Mode
 #+BEGIN_SRC emacs-lisp

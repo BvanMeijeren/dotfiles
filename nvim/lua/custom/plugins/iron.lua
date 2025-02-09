@@ -20,7 +20,7 @@ return {
         keymaps = {
           send_motion = '<leader>sc', -- Send selected text to REPL
           visual_send = '<leader>sc', -- Send selected text in visual mode
-          send_file = '<leader>sf', -- Send entire file to REPL
+          send_file = '<leader>sa', -- Send entire all text in the file to REPL
           send_line = '<leader>sl', -- Send current line to REPL
           send_until_cursor = '<leader>sU', -- Send code until the cursor
           send_mark = '<leader>sm', -- Send marked text to REPL
