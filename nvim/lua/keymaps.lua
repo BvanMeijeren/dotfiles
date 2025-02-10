@@ -41,6 +41,7 @@ vim.keymap.set('n', '<leader>to', ':tabonly<CR>', { desc = 'Close all other tabs
 vim.api.nvim_set_keymap('n', '<leader>rr', ':RunCode<CR>', { noremap = true, silent = true }) -- Run the current file
 vim.api.nvim_set_keymap('n', '<leader>rc', ':RunClose<CR>', { noremap = true, silent = true }) -- Run the current file and close output
 vim.api.nvim_set_keymap('v', '<leader>rs', ':RunCode<CR>', { noremap = true, silent = true }) -- Run selected code
+vim.api.nvim_set_keymap('n', '<leader>rx', ':w<CR>:!gcc % -o ./a.out && ./a.out<CR>', { desc = 'Run C code', noremap = true, silent = true })
 
 -- Key mappings for venv-selector
 vim.keymap.set('n', '<leader>vs', ':VenvSelect<CR>', { noremap = true, silent = true }) -- Open venv-selector
