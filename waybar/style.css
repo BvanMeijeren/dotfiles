@@ -1,0 +1,101 @@
+* {
+    border: none;
+    font-family: Font Awesome, Roboto, Arial, sans-serif;
+    font-size: 13px;
+    color: #ffffff;
+    border-radius: 10px;
+}
+
+window {
+	/*font-weight: bold;*/
+}
+window#waybar {
+    min-height: 0px;  /* Adjust this value to make Waybar smaller */
+    padding: 0;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.3); /* Keep a visible background */
+}
+/*-----module groups----*/
+.modules-right {
+	background-color: rgba(0,0,0,0.4);
+    /* margin: 0px 0px 0 5px; */
+    /* padding: 0 0 0px 0px; */
+}
+.modules-center {
+	background-color: rgba(0,0,0,0.4);
+    /* margin: 2px 10px 0 0; */
+}
+.modules-left {
+    /* margin: 2px 0 0 5px; */
+	background-color: rgba(0,0,0,0);
+}
+/*-----modules indv----*/
+#workspaces button {
+    padding: 5px;
+    border-radius: 15px;
+    background: transparent;
+    color: white;
+}
+
+#workspaces button.active {
+    background: rgba(0,119,179,0.8); /* Change color for active workspace */
+    font-weight: bold;
+    border: 2px solid white;
+}
+
+
+
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#temperature,
+#network,
+#pulseaudio,
+#custom-media,
+#tray,
+#mode,
+#custom-power,
+#custom-menu,
+#idle_inhibitor {
+    padding: 0 10px;
+}
+#mode {
+    color: #cc3436;
+    font-weight: bold;
+}
+
+#custom-power {
+    background-color: rgba(0,119,179,0.8); /* Slightly more opaque */
+    margin: 5px 5px; /* Adjust margins to avoid overlap */
+    /* padding: 6px 12px; /1* Increase padding to make it bigger *1/ */
+    /* font-size: 14px; /1* Increase font size *1/ */
+}
+
+/*-----Indicators----*/
+#idle_inhibitor.activated {
+    color: #2dcc36;
+}
+#pulseaudio.muted {
+    color: #cc3436;
+}
+#battery.charging {
+    color: #2dcc36;
+}
+#battery.warning:not(.charging) {
+	color: #e6e600;
+}
+#battery.critical:not(.charging) {
+    color: #cc3436;
+}
+#temperature.critical {
+    color: #cc3436;
+}
+/*-----Colors----*/
+/*
+ *rgba(0,85,102,1),#005566 --> Indigo(dye)
+ *rgba(0,43,51,1),#002B33 --> Dark Green 
+ *rgba(0,153,153,1),#009999 --> Persian Green 
+ *
+ */
