@@ -43,9 +43,6 @@ window#waybar {
     border: 2px solid white;
 }
 
-
-
-
 #clock,
 #battery,
 #cpu,
@@ -67,10 +64,7 @@ window#waybar {
 }
 
 #custom-power {
-    background-color: rgba(0,119,179,0.8); /* Slightly more opaque */
     margin: 5px 5px; /* Adjust margins to avoid overlap */
-    /* padding: 6px 12px; /1* Increase padding to make it bigger *1/ */
-    /* font-size: 14px; /1* Increase font size *1/ */
 }
 
 /*-----Indicators----*/
