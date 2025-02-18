@@ -50,6 +50,10 @@ vim.keymap.set('n', '<leader>vc', ':VenvSelectCached<CR>', { noremap = true, sil
 -- Neo tree mapping
 vim.keymap.set('n', '<leader>e', ':Neotree toggle<CR>', { noremap = true, silent = true })
 
+-- Commentary
+vim.keymap.set('n', '<leader>cc', ':Commentary<CR>', { desc = 'Toggle comment line' })
+vim.keymap.set('v', '<leader>cc', ':Commentary<CR>', { desc = 'Toggle comment selected' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
