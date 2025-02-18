@@ -38,7 +38,7 @@ window#waybar {
 }
 
 #workspaces button.active {
-    background: rgba(0,119,179,0.8); /* Change color for active workspace */
+    background: rgba(0,0,0,0.8); /* Change color for active workspace */
     font-weight: bold;
     border: 2px solid white;
 }
