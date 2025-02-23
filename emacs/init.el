@@ -1,5 +1,6 @@
 ;; The default is 800 kilobytes. Measured in bytes.
 (setq gc-cons-threshold (* 50 1000 1000))
+(setq ring-bell-function 'ignore)
 
 (defun start/org-babel-tangle-config ()
   "Automatically tangle our Emacs.org config file when we save it. Credit to Emacs From Scratch for this one!"
