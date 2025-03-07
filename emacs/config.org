@@ -1,5 +1,5 @@
-#+Title: Emacs Kickstarter
-#+Author: MiniApollo
+#+Title: Emacs Config Based On Kickstarter
+#+Author: Bastiaan 
 #+Description: A starting point for Gnu Emacs with good defaults and packages that most people may want to use.
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+Startup: showeverything
@@ -18,10 +18,12 @@
   - [[#transparency][Transparency]]
   - [[#fonts][Fonts]]
   - [[#modeline][Modeline]]
+  - [[#smooth-scrolling][Smooth scrolling]]
 - [[#development][Development]]
   - [[#projectile][Projectile]]
   - [[#eglot][Eglot]]
   - [[#yasnippet][Yasnippet]]
+  - [[#eval-buffers-get-automatic-h-split][Eval buffers get automatic h-split]]
   - [[#language-modes][Language modes]]
   - [[#terminal][Terminal]]
 - [[#multi-file-example][Multi File Example]]
@@ -47,6 +49,7 @@ Make startup faster by reducing the frequency of garbage collection. This will b
 #+begin_src emacs-lisp
     ;; The default is 800 kilobytes. Measured in bytes.
     (setq gc-cons-threshold (* 50 1000 1000))
+    (setq ring-bell-function 'ignore)
 #+end_src
 
 ** Auto-tangle Configuration file
@@ -130,72 +133,78 @@ A keybinding framework to set keybindings easily.
 The Leader key is what you will press when you want to access your keybindings (SPC + . Find file).
 To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC to replace n to skip).
 #+begin_src emacs-lisp
-    (use-package general
-      :config
-      (general-evil-setup)
-      ;; Set up 'SPC' as the leader key
-      (general-create-definer start/leader-keys
-        :states '(normal insert visual motion emacs)
-        :keymaps 'override
-        :prefix "SPC"           ;; Set leader key
-        :global-prefix "C-SPC") ;; Set global leader key
+        (use-package general
+          :config
+          (general-evil-setup)
+          ;; Set up 'SPC' as the leader key
+          (general-create-definer start/leader-keys
+            :states '(normal insert visual motion emacs)
+            :keymaps 'override
+            :prefix "SPC"           ;; Set leader key
+            :global-prefix "C-SPC") ;; Set global leader key
 
-      (start/leader-keys
-        "." '(find-file :wk "Find file")
-        "TAB" '(comment-line :wk "Comment lines")
-        "p" '(projectile-command-map :wk "Projectile command map"))
+          (start/leader-keys
+            "." '(find-file :wk "Find file")
+            "TAB" '(comment-line :wk "Comment lines")
+            "p" '(projectile-command-map :wk "Projectile command map"))
 
-      (start/leader-keys
-        "f" '(:ignore t :wk "Find")
-        "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
-        "f r" '(consult-recent-file :wk "Recent files")
-        "f f" '(consult-fd :wk "Fd search for files")
-        "f g" '(consult-ripgrep :wk "Ripgrep search in files")
-        "f l" '(consult-line :wk "Find line")
-        "f i" '(consult-imenu :wk "Imenu buffer locations"))
+          (start/leader-keys
+            "f" '(:ignore t :wk "Find")
+            "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
+            "f r" '(consult-recent-file :wk "Recent files")
+            "f f" '(consult-fd :wk "Fd search for files")
+            "f g" '(consult-ripgrep :wk "Ripgrep search in files")
+            "f l" '(consult-line :wk "Find line")
+            "f i" '(consult-imenu :wk "Imenu buffer locations"))
 
-      (start/leader-keys
-        "b" '(:ignore t :wk "Buffer Bookmarks")
-        "b b" '(consult-buffer :wk "Switch buffer")
-        "b k" '(kill-this-buffer :wk "Kill this buffer")
-        "b i" '(ibuffer :wk "Ibuffer")
-        "b n" '(next-buffer :wk "Next buffer")
-        "b p" '(previous-buffer :wk "Previous buffer")
-        "b r" '(revert-buffer :wk "Reload buffer")
-        "b j" '(consult-bookmark :wk "Bookmark jump"))
+          (start/leader-keys
+            "b" '(:ignore t :wk "Buffer Bookmarks")
+            "b b" '(consult-buffer :wk "Switch buffer")
+            "b k" '(kill-this-buffer :wk "Kill this buffer")
+            "b i" '(ibuffer :wk "Ibuffer")
+            "b n" '(next-buffer :wk "Next buffer")
+            "b p" '(previous-buffer :wk "Previous buffer")
+            "b r" '(revert-buffer :wk "Reload buffer")
+            "b j" '(consult-bookmark :wk "Bookmark jump"))
 
-      (start/leader-keys
-        "d" '(:ignore t :wk "Dired")
-        "d v" '(dired :wk "Open dired")
-        "d j" '(dired-jump :wk "Dired jump to current"))
+          (start/leader-keys
+            "d" '(:ignore t :wk "Dired")
+            "d v" '(dired :wk "Open dired")
+            "d j" '(dired-jump :wk "Dired jump to current"))
 
-      (start/leader-keys
-        "e" '(:ignore t :wk "Eglot Evaluate")
-        "e e" '(eglot-reconnect :wk "Eglot Reconnect")
-        "e f" '(eglot-format :wk "Eglot Format")
-        "e l" '(consult-flymake :wk "Consult Flymake")
-        "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
-        "e r" '(eval-region :wk "Evaluate elisp in region"))
+          (start/leader-keys
+            "e" '(:ignore t :wk "Eglot Evaluate")
+            "e e" '(eglot-reconnect :wk "Eglot Reconnect")
+            "e f" '(eglot-format :wk "Eglot Format")
+            "e l" '(consult-flymake :wk "Consult Flymake")
+            "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+            "e r" '(eval-region :wk "Evaluate elisp in region"))
 
-      (start/leader-keys
-        "g" '(:ignore t :wk "Git")
-        "g g" '(magit-status :wk "Magit status"))
+          (start/leader-keys
+            "g" '(:ignore t :wk "Git")
+            "g g" '(magit-status :wk "Magit status"))
 
-      (start/leader-keys
-        "h" '(:ignore t :wk "Help") ;; To get more help use C-h commands (describe variable, function, etc.)
-        "h q" '(save-buffers-kill-emacs :wk "Quit Emacs and Daemon")
-        "h r" '((lambda () (interactive)
-                  (load-file "~/.config/emacs/init.el"))
-                :wk "Reload Emacs config"))
+          (start/leader-keys
+            "h" '(:ignore t :wk "Help") ;; To get more help use C-h commands (describe variable, function, etc.)
+            "h q" '(save-buffers-kill-emacs :wk "Quit Emacs and Daemon")
+            "h r" '((lambda () (interactive)
+                      (load-file "~/.config/emacs/init.el"))
+                    :wk "Reload Emacs config"))
 
-      (start/leader-keys
-        "s" '(:ignore t :wk "Show")
-        "s e" '(eat :wk "Eat terminal"))
+          (start/leader-keys
+            "s" '(:ignore t :wk "Show")
+            "s e" '(eat :wk "Eat terminal"))
 
-      (start/leader-keys
-        "t" '(:ignore t :wk "Toggle")
-        "t t" '(visual-line-mode :wk "Toggle truncated lines (wrap)")
-        "t l" '(display-line-numbers-mode :wk "Toggle line numbers")))
+          (start/leader-keys
+            "t" '(:ignore t :wk "Toggle")
+            "t t" '(visual-line-mode :wk "Toggle truncated lines (wrap)")
+            "t l" '(display-line-numbers-mode :wk "Toggle line numbers")))
+
+        ;; use vim motions for window navigation 
+    (define-key evil-normal-state-map (kbd "M-h") 'evil-window-left)
+    (define-key evil-normal-state-map (kbd "M-l") 'evil-window-right)
+    (define-key evil-normal-state-map (kbd "M-j") 'evil-window-down)
+    (define-key evil-normal-state-map (kbd "M-k") 'evil-window-up)
 #+end_src
 
 ** Good Defaults
@@ -220,10 +229,13 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
       ;;(global-visual-line-mode t)           ;; Enable truncated lines
       ;;(display-line-numbers-type 'relative) ;; Relative line numbers
       (global-display-line-numbers-mode t)  ;; Display line numbers
+      
+               ;;(mouse-wheel-progressive-speed nil) ;; Disable progressive speed when scrolling
+              (scroll-conservatively 10) ;; Smooth scrolling
+              (pixel-scroll-precision-mode t)
+              (setq evil-want-C-u-scroll t)
+              (scroll-margin 8)
 
-      (mouse-wheel-progressive-speed nil) ;; Disable progressive speed when scrolling
-      (scroll-conservatively 10) ;; Smooth scrolling
-      ;;(scroll-margin 8)
 
       (tab-width 4)
 
@@ -302,6 +314,28 @@ Replace the default modeline with a prettier more useful.
       (doom-modeline-persp-icon t)) ;; Adds folder icon next to persp name
 #+end_src
 
+** Smooth scrolling
+Does not work with Evil (VIM) ctrl+U and ctrl+D
+#+BEGIN_SRC emacs-lisp
+(defun smooth-scroll-down ()
+  "Scroll down smoothly by half a page."
+  (interactive)
+  (dotimes (_ (/ (window-height) 4)) ;; Adjust this number for speed
+    (scroll-up 1)
+    (sit-for 0.0005)))  ;; Adds a small delay (in seconds)
+
+(defun smooth-scroll-up ()
+  "Scroll up smoothly by half a page."
+  (interactive)
+  (dotimes (_ (/ (window-height) 4))
+    (scroll-down 1)
+    (sit-for 0.0005)))  ;; Adds a small delay (in seconds)
+
+;; Bind them to the keys
+(define-key evil-normal-state-map (kbd "C-d") 'smooth-scroll-down)
+(define-key evil-normal-state-map (kbd "C-u") 'smooth-scroll-up)
+#+end_src
+
 * Development
 ** Projectile
 Project interaction library for Emacs.
@@ -334,24 +368,25 @@ Or add the lua-language-server executable to your path.
 If you can use a package manager just install the lsp server and add a hook.
 Use visual block to uncomment easily in Org documents (C-v).
 #+begin_src emacs-lisp
-(use-package eglot
-  :ensure nil ;; Don't install eglot because it's now built-in
-  :hook ((c-mode c++-mode python-mode lua-mode sql-mode) ;; Autostart LSP for SQL
-         . eglot-ensure)
-  :custom
-  ;; LSP Config
-  (eglot-events-buffer-size 0) ;; No event buffers (Lsp server logs)
-  (eglot-autoshutdown t) ;; Shutdown unused servers.
-  (eglot-report-progress nil) ;; Disable LSP server logs
-  :config
-  ;; Add manual LSP servers
-  (add-to-list 'eglot-server-programs
-               '(lua-mode . ("PATH_TO_THE_LSP_FOLDER/bin/lua-language-server" "-lsp")))
-  (add-to-list 'eglot-server-programs
-               '(sql-mode . ("sqls"))) ;; Adds SQL language server
-  (add-to-list 'eglot-server-programs
-               '(python-mode . ("pyright-langserver" "--stdio")))) ;; Adds Python LSP
-
+  (use-package eglot
+	:ensure nil ;; `eglot` is built into Emacs 29, so no need to install
+	:hook ((go-mode python-mode c-mode c++-mode) . eglot-ensure) ;; Auto-start for these languages
+	:custom
+	(eglot-events-buffer-size 0)  ;; No event buffers
+	(eglot-autoshutdown t)        ;; Shutdown unused servers
+	(eglot-report-progress nil)   ;; Disable verbose LSP messages
+	:config
+	(add-to-list 'eglot-server-programs
+				 '(go-mode . ("gopls"))) ;; Manually specify `gopls` for Go
+	(add-to-list 'eglot-server-programs
+				 '(python-mode . ("pyright-langserver" "--stdio"))) ;; Python
+	(add-to-list 'eglot-server-programs
+				 '(c-mode . ("clangd")))
+	;;(add-to-list 'eglot-server-programs
+	;;             '(c++-mode . ("clangd")))
+	(add-to-list 'eglot-server-programs
+				 '(sql-mode . ("sqls"))) ;; Adds SQL language server
+  )
 #+end_src
 ** Yasnippet
 A template system for Emacs. And yasnippet-snippets is a snippet collection package.
@@ -361,6 +396,15 @@ To use it write out the full keyword (or use autocompletion) and press Tab.
       :hook (prog-mode . yas-minor-mode))
 #+end_src
 
+** Eval buffers get automatic h-split
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'display-buffer-alist
+             '("\\*.*\\*"  ;; Match all buffers with `*` in the name (adjust as needed)
+               (display-buffer-reuse-window display-buffer-in-side-window)
+               (side . bottom)    ;; Open at the bottom
+               (window-height . 12)))  ;; Set height to 12 lines
+
+#+END_SRC
 ** Language modes
 It's not required for every language like C,C++,C#,Java,Javascript etc. to install language mode packages,
 but for more specific languages it is necessary for syntax highlighting.
@@ -394,10 +438,18 @@ Use SPC-tab to uncomment the lines.
     (python-shell-send-string code) ;; Removed output-buffer argument
     (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
 #+END_SRC
+
 *** SQL Mode
 #+BEGIN_SRC emacs-lisp
     ;;(use-package sql-mode
      ;; :mode "//.sql//'")
+#+END_SRC
+
+*** Go
+#+BEGIN_SRC emacs-lisp
+(use-package go-mode
+  :mode "\\.go\\'"
+  :hook ((before-save . gofmt-before-save))) ;; Auto-format before saving
 #+END_SRC
 
 *** Org Mode

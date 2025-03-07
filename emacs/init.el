@@ -43,71 +43,77 @@
   (evil-collection-init))
 
 (use-package general
-  :config
-  (general-evil-setup)
-  ;; Set up 'SPC' as the leader key
-  (general-create-definer start/leader-keys
-    :states '(normal insert visual motion emacs)
-    :keymaps 'override
-    :prefix "SPC"           ;; Set leader key
-    :global-prefix "C-SPC") ;; Set global leader key
+      :config
+      (general-evil-setup)
+      ;; Set up 'SPC' as the leader key
+      (general-create-definer start/leader-keys
+        :states '(normal insert visual motion emacs)
+        :keymaps 'override
+        :prefix "SPC"           ;; Set leader key
+        :global-prefix "C-SPC") ;; Set global leader key
 
-  (start/leader-keys
-    "." '(find-file :wk "Find file")
-    "TAB" '(comment-line :wk "Comment lines")
-    "p" '(projectile-command-map :wk "Projectile command map"))
+      (start/leader-keys
+        "." '(find-file :wk "Find file")
+        "TAB" '(comment-line :wk "Comment lines")
+        "p" '(projectile-command-map :wk "Projectile command map"))
 
-  (start/leader-keys
-    "f" '(:ignore t :wk "Find")
-    "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
-    "f r" '(consult-recent-file :wk "Recent files")
-    "f f" '(consult-fd :wk "Fd search for files")
-    "f g" '(consult-ripgrep :wk "Ripgrep search in files")
-    "f l" '(consult-line :wk "Find line")
-    "f i" '(consult-imenu :wk "Imenu buffer locations"))
+      (start/leader-keys
+        "f" '(:ignore t :wk "Find")
+        "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
+        "f r" '(consult-recent-file :wk "Recent files")
+        "f f" '(consult-fd :wk "Fd search for files")
+        "f g" '(consult-ripgrep :wk "Ripgrep search in files")
+        "f l" '(consult-line :wk "Find line")
+        "f i" '(consult-imenu :wk "Imenu buffer locations"))
 
-  (start/leader-keys
-    "b" '(:ignore t :wk "Buffer Bookmarks")
-    "b b" '(consult-buffer :wk "Switch buffer")
-    "b k" '(kill-this-buffer :wk "Kill this buffer")
-    "b i" '(ibuffer :wk "Ibuffer")
-    "b n" '(next-buffer :wk "Next buffer")
-    "b p" '(previous-buffer :wk "Previous buffer")
-    "b r" '(revert-buffer :wk "Reload buffer")
-    "b j" '(consult-bookmark :wk "Bookmark jump"))
+      (start/leader-keys
+        "b" '(:ignore t :wk "Buffer Bookmarks")
+        "b b" '(consult-buffer :wk "Switch buffer")
+        "b k" '(kill-this-buffer :wk "Kill this buffer")
+        "b i" '(ibuffer :wk "Ibuffer")
+        "b n" '(next-buffer :wk "Next buffer")
+        "b p" '(previous-buffer :wk "Previous buffer")
+        "b r" '(revert-buffer :wk "Reload buffer")
+        "b j" '(consult-bookmark :wk "Bookmark jump"))
 
-  (start/leader-keys
-    "d" '(:ignore t :wk "Dired")
-    "d v" '(dired :wk "Open dired")
-    "d j" '(dired-jump :wk "Dired jump to current"))
+      (start/leader-keys
+        "d" '(:ignore t :wk "Dired")
+        "d v" '(dired :wk "Open dired")
+        "d j" '(dired-jump :wk "Dired jump to current"))
 
-  (start/leader-keys
-    "e" '(:ignore t :wk "Eglot Evaluate")
-    "e e" '(eglot-reconnect :wk "Eglot Reconnect")
-    "e f" '(eglot-format :wk "Eglot Format")
-    "e l" '(consult-flymake :wk "Consult Flymake")
-    "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
-    "e r" '(eval-region :wk "Evaluate elisp in region"))
+      (start/leader-keys
+        "e" '(:ignore t :wk "Eglot Evaluate")
+        "e e" '(eglot-reconnect :wk "Eglot Reconnect")
+        "e f" '(eglot-format :wk "Eglot Format")
+        "e l" '(consult-flymake :wk "Consult Flymake")
+        "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+        "e r" '(eval-region :wk "Evaluate elisp in region"))
 
-  (start/leader-keys
-    "g" '(:ignore t :wk "Git")
-    "g g" '(magit-status :wk "Magit status"))
+      (start/leader-keys
+        "g" '(:ignore t :wk "Git")
+        "g g" '(magit-status :wk "Magit status"))
 
-  (start/leader-keys
-    "h" '(:ignore t :wk "Help") ;; To get more help use C-h commands (describe variable, function, etc.)
-    "h q" '(save-buffers-kill-emacs :wk "Quit Emacs and Daemon")
-    "h r" '((lambda () (interactive)
-              (load-file "~/.config/emacs/init.el"))
-            :wk "Reload Emacs config"))
+      (start/leader-keys
+        "h" '(:ignore t :wk "Help") ;; To get more help use C-h commands (describe variable, function, etc.)
+        "h q" '(save-buffers-kill-emacs :wk "Quit Emacs and Daemon")
+        "h r" '((lambda () (interactive)
+                  (load-file "~/.config/emacs/init.el"))
+                :wk "Reload Emacs config"))
 
-  (start/leader-keys
-    "s" '(:ignore t :wk "Show")
-    "s e" '(eat :wk "Eat terminal"))
+      (start/leader-keys
+        "s" '(:ignore t :wk "Show")
+        "s e" '(eat :wk "Eat terminal"))
 
-  (start/leader-keys
-    "t" '(:ignore t :wk "Toggle")
-    "t t" '(visual-line-mode :wk "Toggle truncated lines (wrap)")
-    "t l" '(display-line-numbers-mode :wk "Toggle line numbers")))
+      (start/leader-keys
+        "t" '(:ignore t :wk "Toggle")
+        "t t" '(visual-line-mode :wk "Toggle truncated lines (wrap)")
+        "t l" '(display-line-numbers-mode :wk "Toggle line numbers")))
+
+    ;; use vim motions for window navigation 
+(define-key evil-normal-state-map (kbd "M-h") 'evil-window-left)
+(define-key evil-normal-state-map (kbd "M-l") 'evil-window-right)
+(define-key evil-normal-state-map (kbd "M-j") 'evil-window-down)
+(define-key evil-normal-state-map (kbd "M-k") 'evil-window-up)
 
 (use-package emacs
   :custom
@@ -130,9 +136,12 @@
   ;;(display-line-numbers-type 'relative) ;; Relative line numbers
   (global-display-line-numbers-mode t)  ;; Display line numbers
 
-  (mouse-wheel-progressive-speed nil) ;; Disable progressive speed when scrolling
-  (scroll-conservatively 10) ;; Smooth scrolling
-  ;;(scroll-margin 8)
+           ;;(mouse-wheel-progressive-speed nil) ;; Disable progressive speed when scrolling
+          (scroll-conservatively 10) ;; Smooth scrolling
+          (pixel-scroll-precision-mode t)
+          (setq evil-want-C-u-scroll t)
+          (scroll-margin 8)
+
 
   (tab-width 4)
 
@@ -188,6 +197,24 @@
   (doom-modeline-persp-name t)  ;; Adds perspective name to modeline
   (doom-modeline-persp-icon t)) ;; Adds folder icon next to persp name
 
+(defun smooth-scroll-down ()
+  "Scroll down smoothly by half a page."
+  (interactive)
+  (dotimes (_ (/ (window-height) 4)) ;; Adjust this number for speed
+    (scroll-up 1)
+    (sit-for 0.0005)))  ;; Adds a small delay (in seconds)
+
+(defun smooth-scroll-up ()
+  "Scroll up smoothly by half a page."
+  (interactive)
+  (dotimes (_ (/ (window-height) 4))
+    (scroll-down 1)
+    (sit-for 0.0005)))  ;; Adds a small delay (in seconds)
+
+;; Bind them to the keys
+(define-key evil-normal-state-map (kbd "C-d") 'smooth-scroll-down)
+(define-key evil-normal-state-map (kbd "C-u") 'smooth-scroll-up)
+
 (use-package projectile
   :init
   (projectile-mode)
@@ -198,25 +225,33 @@
 ;; Use Bookmarks for smaller, not standard projects
 
 (use-package eglot
-  :ensure nil ;; Don't install eglot because it's now built-in
-  :hook ((c-mode c++-mode python-mode lua-mode sql-mode) ;; Autostart LSP for SQL
-         . eglot-ensure)
+  :ensure nil ;; `eglot` is built into Emacs 29, so no need to install
+  :hook ((go-mode python-mode c-mode c++-mode) . eglot-ensure) ;; Auto-start for these languages
   :custom
-  ;; LSP Config
-  (eglot-events-buffer-size 0) ;; No event buffers (Lsp server logs)
-  (eglot-autoshutdown t) ;; Shutdown unused servers.
-  (eglot-report-progress nil) ;; Disable LSP server logs
+  (eglot-events-buffer-size 0)  ;; No event buffers
+  (eglot-autoshutdown t)        ;; Shutdown unused servers
+  (eglot-report-progress nil)   ;; Disable verbose LSP messages
   :config
-  ;; Add manual LSP servers
   (add-to-list 'eglot-server-programs
-               '(lua-mode . ("PATH_TO_THE_LSP_FOLDER/bin/lua-language-server" "-lsp")))
+			   '(go-mode . ("gopls"))) ;; Manually specify `gopls` for Go
   (add-to-list 'eglot-server-programs
-               '(sql-mode . ("sqls"))) ;; Adds SQL language server
+			   '(python-mode . ("pyright-langserver" "--stdio"))) ;; Python
   (add-to-list 'eglot-server-programs
-               '(python-mode . ("pyright-langserver" "--stdio")))) ;; Adds Python LSP
+			   '(c-mode . ("clangd")))
+  ;;(add-to-list 'eglot-server-programs
+  ;;             '(c++-mode . ("clangd")))
+  (add-to-list 'eglot-server-programs
+			   '(sql-mode . ("sqls"))) ;; Adds SQL language server
+)
 
 (use-package yasnippet-snippets
   :hook (prog-mode . yas-minor-mode))
+
+(add-to-list 'display-buffer-alist
+             '("\\*.*\\*"  ;; Match all buffers with `*` in the name (adjust as needed)
+               (display-buffer-reuse-window display-buffer-in-side-window)
+               (side . bottom)    ;; Open at the bottom
+               (window-height . 12)))  ;; Set height to 12 lines
 
 (use-package lua-mode
   :mode "\\.lua\\'") ;; Only start in a lua file
@@ -224,23 +259,24 @@
 ;;(use-package python-mode
   ;;:mode "\\.py\\'")
 
-(use-package pyvenv
-  :config
-  ;;(setenv "WORKON_HOME" "~/.venv/") ;; Set location of venvs if not in project dir
-  (pyvenv-mode 1)) ;; Enable pyvenv globally
-
 (defun my-python-eval-region-or-line ()
   "Evaluate the selected region or the current line in Python, displaying results in a small window."
   (interactive)
-  (unless (python-shell-get-process)
-    (run-python))  ;; Ensure Python shell is running
-  (let ((code (if (use-region-p)
+  (let ((output-buffer (get-buffer-create "*Python Output*"))
+        (code (if (use-region-p)
                   (buffer-substring-no-properties (region-beginning) (region-end))
                 (thing-at-point 'line t))))
-    (python-shell-send-string code)))
+    (with-current-buffer output-buffer
+      (erase-buffer)) ;; Clear previous output
+    (python-shell-send-string code) ;; Removed output-buffer argument
+    (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
 
 ;;(use-package sql-mode
  ;; :mode "//.sql//'")
+
+(use-package go-mode
+  :mode "\\.go\\'"
+  :hook ((before-save . gofmt-before-save))) ;; Auto-format before saving
 
 (use-package org
   :ensure nil
