@@ -95,13 +95,10 @@ With Emacs 29 use-package is now built-in.
 #+end_src
 
 ** Evil Mode
-An extensible vi/vim layer for Emacs. Because…let’s face it. The Vim keybindings are just plain better.
 Notes:
 - You can toggle evil mode with C-z.
 - To paste without copy (yank) select the text and use P (shift-p).
 
-If you don't want to use evil-mode don't forget to remove:
-- Messages buffer fix in Good default section (:ghook)
 - And also change general.el keybindings and setup (general-evil-setup, :states, etc.)
 #+begin_src emacs-lisp
     (use-package evil
@@ -370,7 +367,7 @@ Use visual block to uncomment easily in Org documents (C-v).
 #+begin_src emacs-lisp
   (use-package eglot
 	:ensure nil ;; `eglot` is built into Emacs 29, so no need to install
-	:hook ((go-mode python-mode c-mode c++-mode) . eglot-ensure) ;; Auto-start for these languages
+	:hook ((go-mode python-mode c-mode c++-mode sql-mode) . eglot-ensure) ;; Auto-start for these languages
 	:custom
 	(eglot-events-buffer-size 0)  ;; No event buffers
 	(eglot-autoshutdown t)        ;; Shutdown unused servers
@@ -441,8 +438,18 @@ Use SPC-tab to uncomment the lines.
 
 *** SQL Mode
 #+BEGIN_SRC emacs-lisp
-    ;;(use-package sql-mode
-     ;; :mode "//.sql//'")
+(require 'sql)
+(setq sql-interactive-mode-hook
+      (lambda ()
+        (setq sql-ask-about-save nil)
+        (setq sql-interactive-mode-prompt-regexp "^[^>]*> ")
+        (setq sql-interactive-mode-output-destination 'buffer)))
+
+;; Ensure SQL buffers have proper indentation and appearance
+(add-hook 'sql-mode-hook
+          (lambda ()
+            (setq sql-indent-offset 2)  ;; Indentation level
+            (display-line-numbers-mode)))  ;; Line numbers
 #+END_SRC
 
 *** Go

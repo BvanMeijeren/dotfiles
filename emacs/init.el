@@ -135,7 +135,7 @@
   ;;(global-visual-line-mode t)           ;; Enable truncated lines
   ;;(display-line-numbers-type 'relative) ;; Relative line numbers
   (global-display-line-numbers-mode t)  ;; Display line numbers
-
+  
            ;;(mouse-wheel-progressive-speed nil) ;; Disable progressive speed when scrolling
           (scroll-conservatively 10) ;; Smooth scrolling
           (pixel-scroll-precision-mode t)
@@ -225,23 +225,23 @@
 ;; Use Bookmarks for smaller, not standard projects
 
 (use-package eglot
-  :ensure nil ;; `eglot` is built into Emacs 29, so no need to install
-  :hook ((go-mode python-mode c-mode c++-mode) . eglot-ensure) ;; Auto-start for these languages
-  :custom
-  (eglot-events-buffer-size 0)  ;; No event buffers
-  (eglot-autoshutdown t)        ;; Shutdown unused servers
-  (eglot-report-progress nil)   ;; Disable verbose LSP messages
-  :config
-  (add-to-list 'eglot-server-programs
-			   '(go-mode . ("gopls"))) ;; Manually specify `gopls` for Go
-  (add-to-list 'eglot-server-programs
-			   '(python-mode . ("pyright-langserver" "--stdio"))) ;; Python
-  (add-to-list 'eglot-server-programs
-			   '(c-mode . ("clangd")))
-  ;;(add-to-list 'eglot-server-programs
-  ;;             '(c++-mode . ("clangd")))
-  (add-to-list 'eglot-server-programs
-			   '(sql-mode . ("sqls"))) ;; Adds SQL language server
+	:ensure nil ;; `eglot` is built into Emacs 29, so no need to install
+	:hook ((go-mode python-mode c-mode c++-mode sql-mode) . eglot-ensure) ;; Auto-start for these languages
+	:custom
+	(eglot-events-buffer-size 0)  ;; No event buffers
+	(eglot-autoshutdown t)        ;; Shutdown unused servers
+	(eglot-report-progress nil)   ;; Disable verbose LSP messages
+	:config
+	(add-to-list 'eglot-server-programs
+				 '(go-mode . ("gopls"))) ;; Manually specify `gopls` for Go
+	(add-to-list 'eglot-server-programs
+				 '(python-mode . ("pyright-langserver" "--stdio"))) ;; Python
+	(add-to-list 'eglot-server-programs
+				 '(c-mode . ("clangd")))
+	;;(add-to-list 'eglot-server-programs
+	;;             '(c++-mode . ("clangd")))
+	(add-to-list 'eglot-server-programs
+				 '(sql-mode . ("sqls"))) ;; Adds SQL language server
 )
 
 (use-package yasnippet-snippets
@@ -271,8 +271,18 @@
     (python-shell-send-string code) ;; Removed output-buffer argument
     (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
 
-;;(use-package sql-mode
- ;; :mode "//.sql//'")
+(require 'sql)
+(setq sql-interactive-mode-hook
+      (lambda ()
+        (setq sql-ask-about-save nil)
+        (setq sql-interactive-mode-prompt-regexp "^[^>]*> ")
+        (setq sql-interactive-mode-output-destination 'buffer)))
+
+;; Ensure SQL buffers have proper indentation and appearance
+(add-hook 'sql-mode-hook
+          (lambda ()
+            (setq sql-indent-offset 2)  ;; Indentation level
+            (display-line-numbers-mode)))  ;; Line numbers
 
 (use-package go-mode
   :mode "\\.go\\'"
