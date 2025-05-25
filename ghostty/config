@@ -1,0 +1,16 @@
+# ───────────────
+# Appearance
+# ───────────────
+# font-family = "Hack Nerd Font"
+font-size = 12.5
+
+# ───────────────
+# Colors – Dark Mode (Custom)
+# ───────────────
+background = "#000000"
+foreground = "#c9d1d9"
+
+# ───────────────
+# Shell (e.g. tmux)
+# ───────────────
+command = "tmux"
