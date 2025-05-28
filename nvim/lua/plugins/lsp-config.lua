@@ -16,6 +16,11 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		lazy = false,
+		opts = {
+			servers = {
+				sqlls = {},
+			},
+		},
 		config = function()
 			local cmp_nvim_lsp = require("cmp_nvim_lsp")
 			local capabilities = vim.tbl_deep_extend(
