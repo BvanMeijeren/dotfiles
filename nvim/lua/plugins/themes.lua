@@ -16,13 +16,13 @@ return {
   },
   -- onedark theme
   -- {
-  --   "navarasu/onedark.nvim",
-  --   config = function()
-  --     require("onedark").setup({
-  --       style = "darker",   -- Or your chosen style
-  --       transparent = true, -- Enable transparency
-  --     })
-  --     require("onedark").load()
-  --   end,
+  -- 	"navarasu/onedark.nvim",
+  -- 	config = function()
+  -- 		require("onedark").setup({
+  -- 			style = "darker", -- Or your chosen style
+  -- 			transparent = true, -- Enable transparency
+  -- 		})
+  -- 		require("onedark").load()
+  -- 	end,
   -- },
 }
