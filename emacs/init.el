@@ -117,6 +117,7 @@
 
 (use-package emacs
   :custom
+  ;; hide some UI stuff
   (menu-bar-mode nil)         ;; Disable the menu bar
   (scroll-bar-mode nil)       ;; Disable the scroll bar
   (tool-bar-mode nil)         ;; Disable the tool bar
@@ -136,13 +137,6 @@
   ;;(display-line-numbers-type 'relative) ;; Relative line numbers
   (global-display-line-numbers-mode t)  ;; Display line numbers
   
-           ;;(mouse-wheel-progressive-speed nil) ;; Disable progressive speed when scrolling
-          (scroll-conservatively 10) ;; Smooth scrolling
-          (pixel-scroll-precision-mode t)
-          (setq evil-want-C-u-scroll t)
-          (scroll-margin 8)
-
-
   (tab-width 4)
 
   (make-backup-files nil) ;; Stop creating ~ backup files
@@ -164,6 +158,19 @@
                 (evil-normalize-keymaps))))
           nil nil t)
   )
+
+;; Evil-escape sequence
+(setq-default evil-escape-key-sequence "jj")
+(setq-default evil-escape-delay 0.1)
+
+; Don't move cursor back when exiting insert mode
+(setq evil-move-cursor-back nil)
+
+;; granular undo with evil mode
+(setq evil-want-fine-undo t)
+
+;; Enable paste from system clipboard with C-v in insert mode
+(evil-define-key 'insert global-map (kbd "C-v") 'clipboard-yank)
 
 (use-package gruvbox-theme
   :config
@@ -201,15 +208,15 @@
   "Scroll down smoothly by half a page."
   (interactive)
   (dotimes (_ (/ (window-height) 4)) ;; Adjust this number for speed
-    (scroll-up 1)
-    (sit-for 0.0005)))  ;; Adds a small delay (in seconds)
+    (scroll-up 3)
+    (sit-for 0.0002)))  ;; Adds a small delay (in seconds)
 
 (defun smooth-scroll-up ()
   "Scroll up smoothly by half a page."
   (interactive)
   (dotimes (_ (/ (window-height) 4))
-    (scroll-down 1)
-    (sit-for 0.0005)))  ;; Adds a small delay (in seconds)
+    (scroll-down 2)
+    (sit-for 0.0002)))  ;; Adds a small delay (in seconds)
 
 ;; Bind them to the keys
 (define-key evil-normal-state-map (kbd "C-d") 'smooth-scroll-down)
@@ -485,7 +492,7 @@
   (which-key-sort-uppercase-first nil)
   (which-key-add-column-padding 1) ;; Number of spaces to add to the left of each column
   (which-key-min-display-lines 6)  ;; Increase the minimum lines to display, because the default is only 1
-  (which-key-idle-delay 0.8)       ;; Set the time delay (in seconds) for the which-key popup to appear
+  (which-key-idle-delay 0.3)       ;; Set the time delay (in seconds) for the which-key popup to appear
   (which-key-max-description-length 25)
   (which-key-allow-imprecise-window-fit nil)) ;; Fixes which-key window slipping out in Emacs Daemon
 
@@ -493,3 +500,5 @@
 (setq gc-cons-threshold (* 2 1000 1000))
 ;; Increase the amount of data which Emacs reads from the process
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq comp-deferred-compilation t)
+(setq comp-async-jobs-number 8)
