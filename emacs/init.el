@@ -20,100 +20,112 @@
                          ("nongnu" . "https://elpa.nongnu.org/nongnu/"))) ;; For Eat Terminal
 
 (use-package evil
-  :init ;; Execute code Before a package is loaded
+  :init
   (evil-mode)
-  :config ;; Execute code After a package is loaded
-  (evil-set-initial-state 'eat-mode 'insert) ;; Set initial state in eat terminal to insert mode
-  :custom ;; Customization of package custom variables
-  (evil-want-keybinding nil)    ;; Disable evil bindings in other modes (It's not consistent and not good)
-  (evil-want-C-u-scroll t)      ;; Set C-u to scroll up
-  (evil-want-C-i-jump nil)      ;; Disables C-i jump
-  (evil-undo-system 'undo-redo) ;; C-r to redo
-  (org-return-follows-link t)   ;; Sets RETURN key in org-mode to follow links
-  ;; Unmap keys in 'evil-maps. If not done, org-return-follows-link will not work
+  :custom
+  (evil-want-keybinding nil)
+  (evil-want-C-u-scroll t)
+  (evil-want-C-i-jump nil)
+  (evil-undo-system 'undo-redo)
+  (org-return-follows-link t)
+  :config
+  (evil-set-initial-state 'eat-mode 'insert)
   :bind (:map evil-motion-state-map
               ("SPC" . nil)
               ("RET" . nil)
               ("TAB" . nil)))
-(use-package evil-collection
+
+(use-package key-chord
   :after evil
   :config
-  ;; Setting where to use evil-collection
-  (setq evil-collection-mode-list '(dired ibuffer magit corfu vertico consult))
-  (evil-collection-init))
+ (setq key-chord-two-keys-delay 0.4)   ;; Max time (in seconds) between the two keys
+ (setq key-chord-one-key-delay 0.3)    ;; Delay when both keys are the same (like "jj")
+
+  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+  (key-chord-mode 1))
 
 (use-package general
-      :config
-      (general-evil-setup)
-      ;; Set up 'SPC' as the leader key
-      (general-create-definer start/leader-keys
-        :states '(normal insert visual motion emacs)
-        :keymaps 'override
-        :prefix "SPC"           ;; Set leader key
-        :global-prefix "C-SPC") ;; Set global leader key
+              :config
+              (general-evil-setup)
+              ;; Set up 'SPC' as the leader key
+              (general-create-definer start/leader-keys
+                :states '(normal insert visual motion emacs)
+                :keymaps 'override
+                :prefix "SPC"           ;; Set leader key
+                :global-prefix "C-SPC") ;; Set global leader key
 
-      (start/leader-keys
-        "." '(find-file :wk "Find file")
-        "TAB" '(comment-line :wk "Comment lines")
-        "p" '(projectile-command-map :wk "Projectile command map"))
+              (start/leader-keys
+                "." '(find-file :wk "Find file")
+                "TAB" '(comment-line :wk "Comment lines")
+                "p" '(projectile-command-map :wk "Projectile command map"))
 
-      (start/leader-keys
-        "f" '(:ignore t :wk "Find")
-        "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
-        "f r" '(consult-recent-file :wk "Recent files")
-        "f f" '(consult-fd :wk "Fd search for files")
-        "f g" '(consult-ripgrep :wk "Ripgrep search in files")
-        "f l" '(consult-line :wk "Find line")
-        "f i" '(consult-imenu :wk "Imenu buffer locations"))
+              (start/leader-keys
+                "f" '(:ignore t :wk "Find")
+                "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
+                "f r" '(consult-recent-file :wk "Recent files")
+                "f f" '(consult-fd :wk "Fd search for files")
+                "f g" '(consult-ripgrep :wk "Ripgrep search in files")
+                "f l" '(consult-line :wk "Find line")
+                "f i" '(consult-imenu :wk "Imenu buffer locations"))
 
-      (start/leader-keys
-        "b" '(:ignore t :wk "Buffer Bookmarks")
-        "b b" '(consult-buffer :wk "Switch buffer")
-        "b k" '(kill-this-buffer :wk "Kill this buffer")
-        "b i" '(ibuffer :wk "Ibuffer")
-        "b n" '(next-buffer :wk "Next buffer")
-        "b p" '(previous-buffer :wk "Previous buffer")
-        "b r" '(revert-buffer :wk "Reload buffer")
-        "b j" '(consult-bookmark :wk "Bookmark jump"))
+              (start/leader-keys
+                "b" '(:ignore t :wk "Buffer Bookmarks")
+                "b b" '(consult-buffer :wk "Switch buffer")
+                "b k" '(kill-this-buffer :wk "Kill this buffer")
+                "b i" '(ibuffer :wk "Ibuffer")
+                "b n" '(next-buffer :wk "Next buffer")
+                "b p" '(previous-buffer :wk "Previous buffer")
+                "b r" '(revert-buffer :wk "Reload buffer")
+                "b j" '(consult-bookmark :wk "Bookmark jump"))
 
-      (start/leader-keys
-        "d" '(:ignore t :wk "Dired")
-        "d v" '(dired :wk "Open dired")
-        "d j" '(dired-jump :wk "Dired jump to current"))
+              (start/leader-keys
+                "d" '(:ignore t :wk "Dired")
+                "d v" '(dired :wk "Open dired")
+                "d j" '(dired-jump :wk "Dired jump to current"))
 
-      (start/leader-keys
-        "e" '(:ignore t :wk "Eglot Evaluate")
-        "e e" '(eglot-reconnect :wk "Eglot Reconnect")
-        "e f" '(eglot-format :wk "Eglot Format")
-        "e l" '(consult-flymake :wk "Consult Flymake")
-        "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
-        "e r" '(eval-region :wk "Evaluate elisp in region"))
+              (start/leader-keys
+                "e" '(:ignore t :wk "Eglot Evaluate")
+                "e e" '(eglot-reconnect :wk "Eglot Reconnect")
+                "e f" '(eglot-format :wk "Eglot Format")
+                "e l" '(consult-flymake :wk "Consult Flymake")
+                "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+                "e r" '(eval-region :wk "Evaluate elisp in region"))
 
-      (start/leader-keys
-        "g" '(:ignore t :wk "Git")
-        "g g" '(magit-status :wk "Magit status"))
+              (start/leader-keys
+                "g" '(:ignore t :wk "Git")
+                "g g" '(magit-status :wk "Magit status"))
 
-      (start/leader-keys
-        "h" '(:ignore t :wk "Help") ;; To get more help use C-h commands (describe variable, function, etc.)
-        "h q" '(save-buffers-kill-emacs :wk "Quit Emacs and Daemon")
-        "h r" '((lambda () (interactive)
-                  (load-file "~/.config/emacs/init.el"))
-                :wk "Reload Emacs config"))
+              (start/leader-keys
+                "h" '(:ignore t :wk "Help") ;; To get more help use C-h commands (describe variable, function, etc.)
+                "h q" '(save-buffers-kill-emacs :wk "Quit Emacs and Daemon")
+                "h r" '((lambda () (interactive)
+                          (load-file "~/.config/emacs/init.el"))
+                        :wk "Reload Emacs config"))
 
-      (start/leader-keys
-        "s" '(:ignore t :wk "Show")
-        "s e" '(eat :wk "Eat terminal"))
+              (start/leader-keys
+                "s" '(:ignore t :wk "Show")
+                "s e" '(eat :wk "Eat terminal"))
 
-      (start/leader-keys
-        "t" '(:ignore t :wk "Toggle")
-        "t t" '(visual-line-mode :wk "Toggle truncated lines (wrap)")
-        "t l" '(display-line-numbers-mode :wk "Toggle line numbers")))
+              (start/leader-keys
+                "t" '(:ignore t :wk "Toggle")
+                "t t" '(visual-line-mode :wk "Toggle truncated lines (wrap)")
+                "t l" '(display-line-numbers-mode :wk "Toggle line numbers")))
 
-    ;; use vim motions for window navigation 
-(define-key evil-normal-state-map (kbd "M-h") 'evil-window-left)
-(define-key evil-normal-state-map (kbd "M-l") 'evil-window-right)
-(define-key evil-normal-state-map (kbd "M-j") 'evil-window-down)
-(define-key evil-normal-state-map (kbd "M-k") 'evil-window-up)
+            ;; use vim motions for window navigation 
+        (define-key evil-normal-state-map (kbd "M-h") 'evil-window-left)
+        (define-key evil-normal-state-map (kbd "M-l") 'evil-window-right)
+        (define-key evil-normal-state-map (kbd "M-j") 'evil-window-down)
+        (define-key evil-normal-state-map (kbd "M-k") 'evil-window-up)
+
+    ;; Text zooming like doom emacs, without shift
+    (global-set-key (kbd "C-=") 'text-scale-increase)  ;; C-+ (on most keyboards)
+    (global-set-key (kbd "C-+") 'text-scale-increase)  ;; for some layouts
+    (global-set-key (kbd "C--") 'text-scale-decrease)
+    (global-set-key (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))
+;; in vertico (the buffer switch menu triggered with SPC b b) I want j and k to navigate vim-like
+(with-eval-after-load 'vertico
+  (define-key vertico-map (kbd "j") 'vertico-next)
+  (define-key vertico-map (kbd "k") 'vertico-previous))
 
 (use-package emacs
   :custom
@@ -159,22 +171,23 @@
           nil nil t)
   )
 
-;; Evil-escape sequence
-(setq-default evil-escape-key-sequence "jj")
-(setq-default evil-escape-delay 0.1)
-
-; Don't move cursor back when exiting insert mode
-(setq evil-move-cursor-back nil)
-
-;; granular undo with evil mode
-(setq evil-want-fine-undo t)
-
-;; Enable paste from system clipboard with C-v in insert mode
-(evil-define-key 'insert global-map (kbd "C-v") 'clipboard-yank)
-
 (use-package gruvbox-theme
   :config
   (load-theme 'gruvbox-dark-hard t)) ;; We need to add t to trust this package
+
+(use-package dashboard
+  :ensure t
+  :init
+  (setq inhibit-startup-screen t)
+  (setq dashboard-startup-banner 'official)
+  (setq dashboard-center-content t)         ;; Center content
+  (setq dashboard-set-heading-icons t)      ;; Optional: adds icons
+  (setq dashboard-set-file-icons t)         ;; Optional: adds file icons
+  (setq dashboard-items '((recents  . 5)
+                          (projects . 5)
+                          (bookmarks . 5)))
+  :config
+  (dashboard-setup-startup-hook))
 
 (add-to-list 'default-frame-alist '(alpha-background . 80)) ;; For all new frames henceforth
 
@@ -215,7 +228,7 @@
   "Scroll up smoothly by half a page."
   (interactive)
   (dotimes (_ (/ (window-height) 4))
-    (scroll-down 2)
+    (scroll-down 3)
     (sit-for 0.0002)))  ;; Adds a small delay (in seconds)
 
 ;; Bind them to the keys
@@ -267,29 +280,50 @@
   ;;:mode "\\.py\\'")
 
 (defun my-python-eval-region-or-line ()
-  "Evaluate the selected region or the current line in Python, displaying results in a small window."
-  (interactive)
-  (let ((output-buffer (get-buffer-create "*Python Output*"))
-        (code (if (use-region-p)
-                  (buffer-substring-no-properties (region-beginning) (region-end))
-                (thing-at-point 'line t))))
-    (with-current-buffer output-buffer
-      (erase-buffer)) ;; Clear previous output
-    (python-shell-send-string code) ;; Removed output-buffer argument
-    (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
+      "Evaluate the selected region or the current line in Python, displaying results in a small window."
+      (interactive)
+      (let ((output-buffer (get-buffer-create "*Python Output*"))
+            (code (if (use-region-p)
+                      (buffer-substring-no-properties (region-beginning) (region-end))
+                    (thing-at-point 'line t))))
+        (with-current-buffer output-buffer
+          (erase-buffer)) ;; Clear previous output
+        (python-shell-send-string code) ;; Removed output-buffer argument
+        (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
+
+(add-hook 'python-mode-hook
+          (lambda ()
+            (eglot-ensure)
+            (setq-local eglot-format-buffer-function
+                        (lambda () (call-process "black" nil nil nil (buffer-file-name)))
+                        )))
 
 (require 'sql)
-(setq sql-interactive-mode-hook
-      (lambda ()
-        (setq sql-ask-about-save nil)
-        (setq sql-interactive-mode-prompt-regexp "^[^>]*> ")
-        (setq sql-interactive-mode-output-destination 'buffer)))
+        (setq sql-interactive-mode-hook
+              (lambda ()
+                (setq sql-ask-about-save nil)
+                (setq sql-interactive-mode-prompt-regexp "^[^>]*> ")
+                (setq sql-interactive-mode-output-destination 'buffer)))
 
-;; Ensure SQL buffers have proper indentation and appearance
+        ;; Ensure SQL buffers have proper indentation and appearance
+        (add-hook 'sql-mode-hook
+                  (lambda ()
+                    (setq sql-indent-offset 2)  ;; Indentation level
+                    (display-line-numbers-mode)))  ;; Line numbers
+    
+(defun my-sqlformat-buffer ()
+  "Format the current buffer with pg_format."
+  (interactive)
+  (when (executable-find "pg_format")
+    (let ((orig-point (point)))
+      (shell-command-on-region (point-min) (point-max) "pg_format -"
+                               (current-buffer) t)
+      (goto-char orig-point))))
+
 (add-hook 'sql-mode-hook
           (lambda ()
-            (setq sql-indent-offset 2)  ;; Indentation level
-            (display-line-numbers-mode)))  ;; Line numbers
+            (eglot-ensure)
+            (add-hook 'before-save-hook #'my-sqlformat-buffer nil t)))
 
 (use-package go-mode
   :mode "\\.go\\'"
