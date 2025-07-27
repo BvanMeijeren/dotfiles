@@ -26,11 +26,6 @@
   - [[#eval-buffers-get-automatic-h-split][Eval buffers get automatic h-split]]
   - [[#language-modes][Language modes]]
   - [[#terminal][Terminal]]
-- [[#multi-file-example][Multi File Example]]
-  - [[#adding-the-lisp-directory-to-load-path][Adding the lisp directory to load-path]]
-  - [[#sourcing-the-files][Sourcing the files]]
-  - [[#using-the-file][Using the file]]
-- [[#other-packages][Other Packages]]
   - [[#nerd-icons][Nerd Icons]]
   - [[#git][Git]]
   - [[#corfu][Corfu]]
@@ -128,8 +123,6 @@ Notes:
      
 #+END_SRC
 ** General Keybindings
-A keybinding framework to set keybindings easily.
-The Leader key is what you will press when you want to access your keybindings (SPC + . Find file).
 To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC to replace n to skip).
 #+begin_src emacs-lisp
                 (use-package general
@@ -205,15 +198,10 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
             (define-key evil-normal-state-map (kbd "M-j") 'evil-window-down)
             (define-key evil-normal-state-map (kbd "M-k") 'evil-window-up)
 
-        ;; Text zooming like doom emacs, without shift
-        (global-set-key (kbd "C-=") 'text-scale-increase)  ;; C-+ (on most keyboards)
-        (global-set-key (kbd "C-+") 'text-scale-increase)  ;; for some layouts
-        (global-set-key (kbd "C--") 'text-scale-decrease)
-        (global-set-key (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))
-    ;; in vertico (the buffer switch menu triggered with SPC b b) I want j and k to navigate vim-like
+    ;; ;; in vertico (the buffer switch menu triggered with SPC b b) I want j and k to navigate vim-like
     (with-eval-after-load 'vertico
-      (define-key vertico-map (kbd "j") 'vertico-next)
-      (define-key vertico-map (kbd "k") 'vertico-previous))
+      (define-key vertico-map (kbd "C-j") 'vertico-next)
+      (define-key vertico-map (kbd "C-k") 'vertico-previous))
 
 #+end_src
 
@@ -291,7 +279,6 @@ Use consult-theme to easily try out themes (*Epilepsy* Warning).
 #+end_src
 
 ** Transparency
-With Emacs version 29, true transparency has been added.
 #+begin_src emacs-lisp
     (add-to-list 'default-frame-alist '(alpha-background . 80)) ;; For all new frames henceforth
 #+end_src
@@ -320,6 +307,12 @@ You can use the bindings C-+ C-- for zooming in/out. You can also use CTRL plus 
       ("C--" . text-scale-decrease)
       ("<C-wheel-up>" . text-scale-increase)
       ("<C-wheel-down>" . text-scale-decrease))
+    
+;; Text zooming like doom emacs, without shift
+        (global-set-key (kbd "C-=") 'text-scale-increase)  ;; Does not require shift key this way
+        (global-set-key (kbd "C-+") 'text-scale-increase)  
+        (global-set-key (kbd "C--") 'text-scale-decrease)
+        (global-set-key (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))
 #+end_src
 
 ** Modeline
@@ -335,21 +328,21 @@ Replace the default modeline with a prettier more useful.
 #+end_src
 
 ** Smooth scrolling
-Does not work with Evil (VIM) ctrl+U and ctrl+D
+Control scrolling settings here. Speed and distance can be adjusted.
 #+BEGIN_SRC emacs-lisp
 (defun smooth-scroll-down ()
   "Scroll down smoothly by half a page."
   (interactive)
-  (dotimes (_ (/ (window-height) 4)) ;; Adjust this number for speed
+  (dotimes (_ (/ (window-height) 8)) ;; Adjust this number for speed
     (scroll-up 3)
-    (sit-for 0.0002)))  ;; Adds a small delay (in seconds)
+    (sit-for 0.0001)))  ;; Adds a small delay (in seconds)
 
 (defun smooth-scroll-up ()
   "Scroll up smoothly by half a page."
   (interactive)
-  (dotimes (_ (/ (window-height) 4))
+  (dotimes (_ (/ (window-height) 8))
     (scroll-down 3)
-    (sit-for 0.0002)))  ;; Adds a small delay (in seconds)
+    (sit-for 0.0001)))  ;; Adds a small delay (in seconds)
 
 ;; Bind them to the keys
 (define-key evil-normal-state-map (kbd "C-d") 'smooth-scroll-down)
@@ -358,7 +351,7 @@ Does not work with Evil (VIM) ctrl+U and ctrl+D
 
 * Development
 ** Projectile
-Project interaction library for Emacs.
+Project interaction library for Emacs, like file/project jumping, toggle betwee ncode and test, etc.
 #+begin_src emacs-lisp
     (use-package projectile
       :init
@@ -388,25 +381,25 @@ Or add the lua-language-server executable to your path.
 If you can use a package manager just install the lsp server and add a hook.
 Use visual block to uncomment easily in Org documents (C-v).
 #+begin_src emacs-lisp
-  (use-package eglot
-	:ensure nil ;; `eglot` is built into Emacs 29, so no need to install
-	:hook ((go-mode python-mode c-mode c++-mode sql-mode) . eglot-ensure) ;; Auto-start for these languages
-	:custom
-	(eglot-events-buffer-size 0)  ;; No event buffers
-	(eglot-autoshutdown t)        ;; Shutdown unused servers
-	(eglot-report-progress nil)   ;; Disable verbose LSP messages
-	:config
-	(add-to-list 'eglot-server-programs
-				 '(go-mode . ("gopls"))) ;; Manually specify `gopls` for Go
-	(add-to-list 'eglot-server-programs
-				 '(python-mode . ("pyright-langserver" "--stdio"))) ;; Python
-	(add-to-list 'eglot-server-programs
-				 '(c-mode . ("clangd")))
-	;;(add-to-list 'eglot-server-programs
-	;;             '(c++-mode . ("clangd")))
-	(add-to-list 'eglot-server-programs
-				 '(sql-mode . ("sqls"))) ;; Adds SQL language server
-  )
+    (use-package eglot
+    	:ensure nil ;; `eglot` is built into Emacs 29, so no need to install
+    	:hook ((go-mode python-mode c-mode c++-mode sql-mode) . eglot-ensure) ;; Auto-start for these languages
+    	:custom
+    	(eglot-events-buffer-size 0)  ;; No event buffers
+    	(eglot-autoshutdown t)        ;; Shutdown unused servers
+    	(eglot-report-progress nil)   ;; Disable verbose LSP messages
+    	:config
+    	(add-to-list 'eglot-server-programs
+    				 '(go-mode . ("gopls"))) ;; Manually specify `gopls` for Go
+    	(add-to-list 'eglot-server-programs
+    				 '(python-mode . ("pyright-langserver" "--stdio"))) ;; Python
+    	(add-to-list 'eglot-server-programs ;; C
+    				 '(c-mode . ("clangd")))
+    	(add-to-list 'eglot-server-programs
+    	             '(c++-mode . ("clangd"))) ;; C++
+    	(add-to-list 'eglot-server-programs
+    				 '(sql-mode . ("sqls"))) ;; SQL language server
+    )
 #+end_src
 ** Yasnippet
 A template system for Emacs. And yasnippet-snippets is a snippet collection package.
@@ -417,6 +410,7 @@ To use it write out the full keyword (or use autocompletion) and press Tab.
 #+end_src
 
 ** Eval buffers get automatic h-split
+Makes buffers like the output terminal for python script automatically placed horizontally with line height X.
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'display-buffer-alist
              '("\\*.*\\*"  ;; Match all buffers with `*` in the name (adjust as needed)
@@ -441,11 +435,9 @@ Use SPC-tab to uncomment the lines.
 
 *** Python mode 
 #+BEGIN_SRC emacs-lisp
-    ;;(use-package python-mode
-      ;;:mode "\\.py\\'") 
-#+END_SRC
+    (use-package python-mode
+      :mode "\\.py\\'") 
 
-#+BEGIN_SRC emacs-lisp 
     (defun my-python-eval-region-or-line ()
       "Evaluate the selected region or the current line in Python, displaying results in a small window."
       (interactive)
@@ -468,7 +460,8 @@ Use SPC-tab to uncomment the lines.
 #+END_SRC
 
 *** SQL Mode
-This requires pgformatter to be installed. Pacman in Arch sometimes does not work because it is not the right version. 
+Includes formatting on file save.
+SQL formatting requires pgformatter to be installed. Pacman in Arch sometimes does not work because it is not the right version. 
 
 Download pgformatter via:
 git clone https://github.com/darold/pgFormatter.git
@@ -517,10 +510,7 @@ pg_format --version
 #+END_SRC
 
 *** Org Mode
-Org mode is one of the things that emacs is loved for.
-Once you've used it for a bit, you'll understand why people love it. Even reading about it can be inspiring!
-For example, this document is effectively the source code and descriptions bound into the one document,
-much like the literate programming ideas that Donald Knuth made famous.
+The greatest Emacs package of them all. Enables literate programming. Also good for documenting in markdown style.
 #+begin_src emacs-lisp
     (use-package org
       :ensure nil
@@ -567,42 +557,19 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 Eat(Emulate A Terminal) is a terminal emulator within Emacs.
 It's more portable and less overhead for users over like vterm or eshell.
 We setup eat with eshell, if you want to use bash, zsh etc., check out their git [[https://codeberg.org/akib/emacs-eat][repository]] how to do it.
+
+I found that eat is fine for commands but not for interactive programs like lazygit. Use CLI commands instead. vterm did not do much better.
 #+begin_src emacs-lisp
     (use-package eat
       :hook ('eshell-load-hook #'eat-eshell-mode))
 #+end_src
-
-* Multi File Example
-** Adding the lisp directory to load-path
-Adds the lisp directory to emacs's load path to search for elisp files.
-This is necessary, because emacs does not search the entire user-emacs-directory.
-The directory name can be anything, just add it to the load-path.
-#+begin_src emacs-lisp
-    ;; (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-#+end_src
-
-** Sourcing the files
-To use the elisp files we need to load it.
-Notes:
-- Don't forget the file and the provide name needs to be the same.
-- When naming elisp files, functions, it is recommended to use a group name (e.g init-, start- or any custom name), so it does not get mixed up with other names, functions.
-#+begin_src emacs-lisp
-    ;; (require 'start-multiFileExample)
-#+end_src
-
-** Using the file
-And now we can use everything from that file.
-#+begin_src emacs-lisp
-    ;; (start/hello)
-#+end_src
-
-* Other Packages
+*** * Other Packages
 All the package setups that don't need much tweaking.
 ** Nerd Icons
 For icons and more helpful UI.
 This is an icon set that can be used with dired, ibuffer and other Emacs programs.
 
-Don't forget to use nerd-icons-install-fonts.
+Don't forget to use nerd-icons-install-fonts!
 
 We use Nerd icons because it has more, better icons and all-the-icons only supports GUI.
 While nerd-icons supports both GUI and TUI.
@@ -721,7 +688,7 @@ Recomended for packages like vertico, corfu.
 - Marginalia: Adds extra metadata for completions in the margins (like descriptions).
 - Nerd-icons-completion: Adds icons to completion candidates using the built in completion metadata functions.
 
-We use this packages, because they use emacs native functions. Unlike Ivy or Helm.
+This package uses emacs native functions, unlike Ivy or Helm.
 One alternative is ivy and counsel, check out the [[https://github.com/MiniApollo/kickstart.emacs/wiki][project wiki]] for more inforomation.
 #+begin_src emacs-lisp
     (use-package vertico
@@ -745,6 +712,7 @@ One alternative is ivy and counsel, check out the [[https://github.com/MiniApoll
 
 ** Consult
 Provides search and navigation commands based on the Emacs completion function.
+Examples are the handy SPC b b switch-buffer and command to navigate the emacs docs.
 Check out their [[https://github.com/minad/consult][git repository]] for more awesome functions.
 #+begin_src emacs-lisp
     (use-package consult
@@ -814,7 +782,7 @@ Adds colors to brackets.
 #+end_src
 
 ** Which-Key
-Which-key is a helper utility for keychords (which key to press).
+Which-key is a helper utility for showing what key combinations do what in a pop up in the bottom (which key to press).
 #+begin_src emacs-lisp
     (use-package which-key
       :init

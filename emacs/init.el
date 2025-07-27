@@ -117,15 +117,10 @@
         (define-key evil-normal-state-map (kbd "M-j") 'evil-window-down)
         (define-key evil-normal-state-map (kbd "M-k") 'evil-window-up)
 
-    ;; Text zooming like doom emacs, without shift
-    (global-set-key (kbd "C-=") 'text-scale-increase)  ;; C-+ (on most keyboards)
-    (global-set-key (kbd "C-+") 'text-scale-increase)  ;; for some layouts
-    (global-set-key (kbd "C--") 'text-scale-decrease)
-    (global-set-key (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))
-;; in vertico (the buffer switch menu triggered with SPC b b) I want j and k to navigate vim-like
+;; ;; in vertico (the buffer switch menu triggered with SPC b b) I want j and k to navigate vim-like
 (with-eval-after-load 'vertico
-  (define-key vertico-map (kbd "j") 'vertico-next)
-  (define-key vertico-map (kbd "k") 'vertico-previous))
+  (define-key vertico-map (kbd "C-j") 'vertico-next)
+  (define-key vertico-map (kbd "C-k") 'vertico-previous))
 
 (use-package emacs
   :custom
@@ -203,11 +198,17 @@
 (setq-default line-spacing 0.12)
 
 (use-package emacs
-  :bind
-  ("C-+" . text-scale-increase)
-  ("C--" . text-scale-decrease)
-  ("<C-wheel-up>" . text-scale-increase)
-  ("<C-wheel-down>" . text-scale-decrease))
+      :bind
+      ("C-+" . text-scale-increase)
+      ("C--" . text-scale-decrease)
+      ("<C-wheel-up>" . text-scale-increase)
+      ("<C-wheel-down>" . text-scale-decrease))
+    
+;; Text zooming like doom emacs, without shift
+        (global-set-key (kbd "C-=") 'text-scale-increase)  ;; Does not require shift key this way
+        (global-set-key (kbd "C-+") 'text-scale-increase)  
+        (global-set-key (kbd "C--") 'text-scale-decrease)
+        (global-set-key (kbd "C-0") (lambda () (interactive) (text-scale-set 0)))
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
@@ -220,16 +221,16 @@
 (defun smooth-scroll-down ()
   "Scroll down smoothly by half a page."
   (interactive)
-  (dotimes (_ (/ (window-height) 4)) ;; Adjust this number for speed
+  (dotimes (_ (/ (window-height) 8)) ;; Adjust this number for speed
     (scroll-up 3)
-    (sit-for 0.0002)))  ;; Adds a small delay (in seconds)
+    (sit-for 0.0001)))  ;; Adds a small delay (in seconds)
 
 (defun smooth-scroll-up ()
   "Scroll up smoothly by half a page."
   (interactive)
-  (dotimes (_ (/ (window-height) 4))
+  (dotimes (_ (/ (window-height) 8))
     (scroll-down 3)
-    (sit-for 0.0002)))  ;; Adds a small delay (in seconds)
+    (sit-for 0.0001)))  ;; Adds a small delay (in seconds)
 
 ;; Bind them to the keys
 (define-key evil-normal-state-map (kbd "C-d") 'smooth-scroll-down)
@@ -256,12 +257,12 @@
 				 '(go-mode . ("gopls"))) ;; Manually specify `gopls` for Go
 	(add-to-list 'eglot-server-programs
 				 '(python-mode . ("pyright-langserver" "--stdio"))) ;; Python
-	(add-to-list 'eglot-server-programs
+	(add-to-list 'eglot-server-programs ;; C
 				 '(c-mode . ("clangd")))
-	;;(add-to-list 'eglot-server-programs
-	;;             '(c++-mode . ("clangd")))
 	(add-to-list 'eglot-server-programs
-				 '(sql-mode . ("sqls"))) ;; Adds SQL language server
+	             '(c++-mode . ("clangd"))) ;; C++
+	(add-to-list 'eglot-server-programs
+				 '(sql-mode . ("sqls"))) ;; SQL language server
 )
 
 (use-package yasnippet-snippets
@@ -276,10 +277,10 @@
 (use-package lua-mode
   :mode "\\.lua\\'") ;; Only start in a lua file
 
-;;(use-package python-mode
-  ;;:mode "\\.py\\'")
+(use-package python-mode
+      :mode "\\.py\\'") 
 
-(defun my-python-eval-region-or-line ()
+    (defun my-python-eval-region-or-line ()
       "Evaluate the selected region or the current line in Python, displaying results in a small window."
       (interactive)
       (let ((output-buffer (get-buffer-create "*Python Output*"))
@@ -358,12 +359,6 @@
 
 (use-package eat
   :hook ('eshell-load-hook #'eat-eshell-mode))
-
-;; (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-
-;; (require 'start-multiFileExample)
-
-;; (start/hello)
 
 (use-package nerd-icons
   :if (display-graphic-p))
