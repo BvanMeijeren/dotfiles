@@ -300,31 +300,50 @@
                         )))
 
 (require 'sql)
-        (setq sql-interactive-mode-hook
-              (lambda ()
-                (setq sql-ask-about-save nil)
-                (setq sql-interactive-mode-prompt-regexp "^[^>]*> ")
-                (setq sql-interactive-mode-output-destination 'buffer)))
-
-        ;; Ensure SQL buffers have proper indentation and appearance
-        (add-hook 'sql-mode-hook
+            (setq sql-interactive-mode-hook
                   (lambda ()
-                    (setq sql-indent-offset 2)  ;; Indentation level
-                    (display-line-numbers-mode)))  ;; Line numbers
-    
-(defun my-sqlformat-buffer ()
-  "Format the current buffer with pg_format."
-  (interactive)
-  (when (executable-find "pg_format")
-    (let ((orig-point (point)))
-      (shell-command-on-region (point-min) (point-max) "pg_format -"
-                               (current-buffer) t)
-      (goto-char orig-point))))
+                    (setq sql-ask-about-save nil)
+                    (setq sql-interactive-mode-prompt-regexp "^[^>]*> ")
+                    (setq sql-interactive-mode-output-destination 'buffer)))
 
-(add-hook 'sql-mode-hook
-          (lambda ()
-            (eglot-ensure)
-            (add-hook 'before-save-hook #'my-sqlformat-buffer nil t)))
+            ;; Ensure SQL buffers have proper indentation and appearance
+            (add-hook 'sql-mode-hook
+                      (lambda ()
+                        (setq sql-indent-offset 2)  ;; Indentation level
+                        (display-line-numbers-mode)))  ;; Line numbers
+        
+    (defun my-sqlformat-buffer ()
+      "Format the current buffer with pg_format."
+      (interactive)
+      (when (executable-find "pg_format")
+        (let ((orig-point (point)))
+          (shell-command-on-region (point-min) (point-max) "pg_format -"
+                                   (current-buffer) t)
+          (goto-char orig-point))))
+
+    (add-hook 'sql-mode-hook
+              (lambda ()
+                (eglot-ensure)
+                (add-hook 'before-save-hook #'my-sqlformat-buffer nil t)))
+
+;; Use this function to connect to redshift using environment variables    
+(defun my/sql-connect-redshift-env ()
+  "Connect to Redshift using environment variables."
+  (interactive)
+  (let ((user     (getenv "REDSHIFT_USER"))
+        (password (getenv "REDSHIFT_PASSWORD"))
+        (host     (getenv "REDSHIFT_HOST"))
+        (port     (string-to-number (or (getenv "REDSHIFT_PORT") "5439")))
+        (database (getenv "REDSHIFT_DATABASE")))
+    (unless (and user password host database)
+      (user-error "Missing one or more required REDSHIFT_* environment variables"))
+    (sql-connect
+     `((sql-product . postgres)
+       (sql-user . ,user)
+       (sql-password . ,password)
+       (sql-server . ,host)
+       (sql-port . ,port)
+       (sql-database . ,database)))))
 
 (use-package go-mode
   :mode "\\.go\\'"

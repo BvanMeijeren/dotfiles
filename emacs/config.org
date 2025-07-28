@@ -1,6 +1,6 @@
 #+Title: Emacs Config Based On Kickstarter
 #+Author: Bastiaan 
-#+Description: A starting point for Gnu Emacs with good defaults and packages that most people may want to use.
+#+Description: My config mainly aimed at writing SQL, Python and Org docs.
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+Startup: showeverything
 #+Options: toc:2
@@ -461,6 +461,8 @@ Use SPC-tab to uncomment the lines.
 
 *** SQL Mode
 Includes formatting on file save.
+
+**** pgformatter
 SQL formatting requires pgformatter to be installed. Pacman in Arch sometimes does not work because it is not the right version. 
 
 Download pgformatter via:
@@ -472,33 +474,56 @@ sudo make install
 which pg_format
 pg_format --version
 
-#+BEGIN_SRC emacs-lisp
-        (require 'sql)
-        (setq sql-interactive-mode-hook
-              (lambda ()
-                (setq sql-ask-about-save nil)
-                (setq sql-interactive-mode-prompt-regexp "^[^>]*> ")
-                (setq sql-interactive-mode-output-destination 'buffer)))
+**** psql
+Also get psql (sometimes called postgresql, depending package manager).
 
-        ;; Ensure SQL buffers have proper indentation and appearance
+**** SQL config
+#+BEGIN_SRC emacs-lisp
+                (require 'sql)
+                (setq sql-interactive-mode-hook
+                      (lambda ()
+                        (setq sql-ask-about-save nil)
+                        (setq sql-interactive-mode-prompt-regexp "^[^>]*> ")
+                        (setq sql-interactive-mode-output-destination 'buffer)))
+
+                ;; Ensure SQL buffers have proper indentation and appearance
+                (add-hook 'sql-mode-hook
+                          (lambda ()
+                            (setq sql-indent-offset 2)  ;; Indentation level
+                            (display-line-numbers-mode)))  ;; Line numbers
+            
+        (defun my-sqlformat-buffer ()
+          "Format the current buffer with pg_format."
+          (interactive)
+          (when (executable-find "pg_format")
+            (let ((orig-point (point)))
+              (shell-command-on-region (point-min) (point-max) "pg_format -"
+                                       (current-buffer) t)
+              (goto-char orig-point))))
+
         (add-hook 'sql-mode-hook
                   (lambda ()
-                    (setq sql-indent-offset 2)  ;; Indentation level
-                    (display-line-numbers-mode)))  ;; Line numbers
+                    (eglot-ensure)
+                    (add-hook 'before-save-hook #'my-sqlformat-buffer nil t)))
     
-(defun my-sqlformat-buffer ()
-  "Format the current buffer with pg_format."
-  (interactive)
-  (when (executable-find "pg_format")
-    (let ((orig-point (point)))
-      (shell-command-on-region (point-min) (point-max) "pg_format -"
-                               (current-buffer) t)
-      (goto-char orig-point))))
-
-(add-hook 'sql-mode-hook
-          (lambda ()
-            (eglot-ensure)
-            (add-hook 'before-save-hook #'my-sqlformat-buffer nil t)))
+    ;; Use this function to connect to redshift using environment variables    
+    (defun my/sql-connect-redshift-env ()
+      "Connect to Redshift using environment variables."
+      (interactive)
+      (let ((user     (getenv "REDSHIFT_USER"))
+            (password (getenv "REDSHIFT_PASSWORD"))
+            (host     (getenv "REDSHIFT_HOST"))
+            (port     (string-to-number (or (getenv "REDSHIFT_PORT") "5439")))
+            (database (getenv "REDSHIFT_DATABASE")))
+        (unless (and user password host database)
+          (user-error "Missing one or more required REDSHIFT_* environment variables"))
+        (sql-connect
+         `((sql-product . postgres)
+           (sql-user . ,user)
+           (sql-password . ,password)
+           (sql-server . ,host)
+           (sql-port . ,port)
+           (sql-database . ,database)))))
 
 #+END_SRC
 
@@ -554,7 +579,7 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 
 ** Terminal
 *** Eat
-Eat(Emulate A Terminal) is a terminal emulator within Emacs.
+Eat (Emulate A Terminal) is a terminal emulator within Emacs.
 It's more portable and less overhead for users over like vterm or eshell.
 We setup eat with eshell, if you want to use bash, zsh etc., check out their git [[https://codeberg.org/akib/emacs-eat][repository]] how to do it.
 
@@ -563,8 +588,10 @@ I found that eat is fine for commands but not for interactive programs like lazy
     (use-package eat
       :hook ('eshell-load-hook #'eat-eshell-mode))
 #+end_src
+
 *** * Other Packages
 All the package setups that don't need much tweaking.
+
 ** Nerd Icons
 For icons and more helpful UI.
 This is an icon set that can be used with dired, ibuffer and other Emacs programs.
