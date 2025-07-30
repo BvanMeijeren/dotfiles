@@ -317,7 +317,7 @@
       (interactive)
       (when (executable-find "pg_format")
         (let ((orig-point (point)))
-          (shell-command-on-region (point-min) (point-max) "pg_format -"
+          (shell-command-on-region (point-min) (point-max) "pg_format --comma-start -"
                                    (current-buffer) t)
           (goto-char orig-point))))
 
@@ -396,6 +396,20 @@
          (magit-pre-refresh  . diff-hl-magit-pre-refresh)
          (magit-post-refresh . diff-hl-magit-post-refresh))
   :init (global-diff-hl-mode))
+
+(use-package docker
+  :ensure t
+  :bind ("C-c d" . docker))
+
+(use-package dockerfile-mode
+  :ensure t
+  :mode "Dockerfile\\'")
+
+;; (use-package docker-tramp
+;;   :ensure t
+;;   :defer t
+;;   :custom
+;;   (docker-tramp-use-names t))  ;; lets you use container names in TRAMP paths
 
 (use-package corfu
   ;; Optional customizations

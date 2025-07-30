@@ -28,6 +28,7 @@
   - [[#terminal][Terminal]]
   - [[#nerd-icons][Nerd Icons]]
   - [[#git][Git]]
+  - [[#docker][Docker]]
   - [[#corfu][Corfu]]
   - [[#cape][Cape]]
   - [[#orderless][Orderless]]
@@ -474,6 +475,9 @@ sudo make install
 which pg_format
 pg_format --version
 
+Arguments can be passed on to configure the pg_formatter options.
+Example: pg_format --spaces 2 --comma-start
+
 **** psql
 Also get psql (sometimes called postgresql, depending package manager).
 
@@ -497,7 +501,7 @@ Also get psql (sometimes called postgresql, depending package manager).
           (interactive)
           (when (executable-find "pg_format")
             (let ((orig-point (point)))
-              (shell-command-on-region (point-min) (point-max) "pg_format -"
+              (shell-command-on-region (point-min) (point-max) "pg_format --comma-start -"
                                        (current-buffer) t)
               (goto-char orig-point))))
 
@@ -627,6 +631,25 @@ Highlights uncommitted changes on the left side of the window (area also known a
              (magit-pre-refresh  . diff-hl-magit-pre-refresh)
              (magit-post-refresh . diff-hl-magit-post-refresh))
       :init (global-diff-hl-mode))
+#+end_src
+
+** Docker
+Use Emacs to interact with Docker containers, images, and volumes.
+
+#+begin_src emacs-lisp
+    (use-package docker
+      :ensure t
+      :bind ("C-c d" . docker))
+
+    (use-package dockerfile-mode
+      :ensure t
+      :mode "Dockerfile\\'")
+
+    ;; (use-package docker-tramp
+    ;;   :ensure t
+    ;;   :defer t
+    ;;   :custom
+    ;;   (docker-tramp-use-names t))  ;; lets you use container names in TRAMP paths
 #+end_src
 
 ** Corfu
