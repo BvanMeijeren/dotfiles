@@ -25,6 +25,7 @@
   - [[#yasnippet][Yasnippet]]
   - [[#eval-buffers-get-automatic-h-split][Eval buffers get automatic h-split]]
   - [[#language-modes][Language modes]]
+  - [[#org-mode][Org Mode]]
   - [[#terminal][Terminal]]
   - [[#nerd-icons][Nerd Icons]]
   - [[#git][Git]]
@@ -436,28 +437,29 @@ Use SPC-tab to uncomment the lines.
 
 *** Python mode 
 #+BEGIN_SRC emacs-lisp
-    (use-package python-mode
-      :mode "\\.py\\'") 
+        (use-package python-mode
+          :mode "\\.py\\'") 
 
-    (defun my-python-eval-region-or-line ()
-      "Evaluate the selected region or the current line in Python, displaying results in a small window."
-      (interactive)
-      (let ((output-buffer (get-buffer-create "*Python Output*"))
-            (code (if (use-region-p)
-                      (buffer-substring-no-properties (region-beginning) (region-end))
-                    (thing-at-point 'line t))))
-        (with-current-buffer output-buffer
-          (erase-buffer)) ;; Clear previous output
-        (python-shell-send-string code) ;; Removed output-buffer argument
-        (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
+        (defun my-python-eval-region-or-line ()
+          "Evaluate the selected region or the current line in Python, displaying results in a small window."
+          (interactive)
+          (let ((output-buffer (get-buffer-create "*Python Output*"))
+                (code (if (use-region-p)
+                          (buffer-substring-no-properties (region-beginning) (region-end))
+                        (thing-at-point 'line t))))
+            (with-current-buffer output-buffer
+              (erase-buffer)) ;; Clear previous output
+            (python-shell-send-string code) ;; Removed output-buffer argument
+            (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
 
-(add-hook 'python-mode-hook
-          (lambda ()
-            (eglot-ensure)
-            (setq-local eglot-format-buffer-function
-                        (lambda () (call-process "black" nil nil nil (buffer-file-name)))
-                        )))
+    (add-hook 'python-mode-hook
+              (lambda ()
+                (eglot-ensure)
+                (setq-local eglot-format-buffer-function
+                            (lambda () (call-process "black" nil nil nil (buffer-file-name)))
+                            )))
 
+(setq python-shell-interpreter "python3") ;; python3 as default interpreter for compatibility
 #+END_SRC
 
 *** SQL Mode
@@ -538,33 +540,38 @@ Also get psql (sometimes called postgresql, depending package manager).
   :hook ((before-save . gofmt-before-save))) ;; Auto-format before saving
 #+END_SRC
 
-*** Org Mode
+** Org Mode
 The greatest Emacs package of them all. Enables literate programming. Also good for documenting in markdown style.
 #+begin_src emacs-lisp
     (use-package org
       :ensure nil
       :custom
       (org-edit-src-content-indentation 4) ;; Set src block automatic indent to 4 instead of 2.
-
+      (org-confirm-babel-evaluate nil) ;; disable the promp asking "Do you really want to run this code block?"
       :hook
       (org-mode . org-indent-mode) ;; Indent text
-      ;; The following prevents <> from auto-pairing when electric-pair-mode is on.
-      ;; Otherwise, org-tempo is broken when you try to <s TAB...
-      ;;(org-mode . (lambda ()
-      ;;              (setq-local electric-pair-inhibit-predicate
-      ;;                          `(lambda (c)
-      ;;                             (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
-      )
+         )
 #+end_src
 
-**** Table of Contents
+*** Language support in Org
+#+BEGIN_SRC emacs-lisp 
+    (with-eval-after-load 'org
+        (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((python . t)
+           (sql . t)
+    	   (shell . t) ;; enables all shells: bash, zsh, sh, etc 
+           (emacs-lisp . t))))  ;; Keep emacs-lisp if you want to evaluate elisp in Org
+#+END_SRC
+
+*** Table of Contents
 #+begin_src emacs-lisp
     (use-package toc-org
       :commands toc-org-enable
       :hook (org-mode . toc-org-mode))
 #+end_src
 
-**** Org Superstar
+*** Org Superstar
 Prettify headings and plain lists in Org mode. Modern version of org-bullets.
 #+begin_src emacs-lisp
     (use-package org-superstar
@@ -572,7 +579,7 @@ Prettify headings and plain lists in Org mode. Modern version of org-bullets.
       :hook (org-mode . org-superstar-mode))
 #+end_src
 
-**** Source Code Block Tag Expansion
+*** Source Code Block Tag Expansion
 Org-tempo is not a separate package but a module within org that can be enabled.
 Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 #+begin_src emacs-lisp

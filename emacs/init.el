@@ -141,7 +141,7 @@
   ;;(recentf-mode t) ;; Enable recent file mode
 
   ;;(global-visual-line-mode t)           ;; Enable truncated lines
-  ;;(display-line-numbers-type 'relative) ;; Relative line numbers
+  (display-line-numbers-type 'relative) ;; Relative line numbers
   (global-display-line-numbers-mode t)  ;; Display line numbers
   
   (tab-width 4)
@@ -278,26 +278,28 @@
   :mode "\\.lua\\'") ;; Only start in a lua file
 
 (use-package python-mode
-      :mode "\\.py\\'") 
+          :mode "\\.py\\'") 
 
-    (defun my-python-eval-region-or-line ()
-      "Evaluate the selected region or the current line in Python, displaying results in a small window."
-      (interactive)
-      (let ((output-buffer (get-buffer-create "*Python Output*"))
-            (code (if (use-region-p)
-                      (buffer-substring-no-properties (region-beginning) (region-end))
-                    (thing-at-point 'line t))))
-        (with-current-buffer output-buffer
-          (erase-buffer)) ;; Clear previous output
-        (python-shell-send-string code) ;; Removed output-buffer argument
-        (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
+        (defun my-python-eval-region-or-line ()
+          "Evaluate the selected region or the current line in Python, displaying results in a small window."
+          (interactive)
+          (let ((output-buffer (get-buffer-create "*Python Output*"))
+                (code (if (use-region-p)
+                          (buffer-substring-no-properties (region-beginning) (region-end))
+                        (thing-at-point 'line t))))
+            (with-current-buffer output-buffer
+              (erase-buffer)) ;; Clear previous output
+            (python-shell-send-string code) ;; Removed output-buffer argument
+            (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
 
-(add-hook 'python-mode-hook
-          (lambda ()
-            (eglot-ensure)
-            (setq-local eglot-format-buffer-function
-                        (lambda () (call-process "black" nil nil nil (buffer-file-name)))
-                        )))
+    (add-hook 'python-mode-hook
+              (lambda ()
+                (eglot-ensure)
+                (setq-local eglot-format-buffer-function
+                            (lambda () (call-process "black" nil nil nil (buffer-file-name)))
+                            )))
+
+(setq python-shell-interpreter "python3") ;; python3 as default interpreter for compatibility
 
 (require 'sql)
             (setq sql-interactive-mode-hook
@@ -353,16 +355,18 @@
   :ensure nil
   :custom
   (org-edit-src-content-indentation 4) ;; Set src block automatic indent to 4 instead of 2.
-
+  (org-confirm-babel-evaluate nil) ;; disable the promp asking "Do you really want to run this code block?"
   :hook
   (org-mode . org-indent-mode) ;; Indent text
-  ;; The following prevents <> from auto-pairing when electric-pair-mode is on.
-  ;; Otherwise, org-tempo is broken when you try to <s TAB...
-  ;;(org-mode . (lambda ()
-  ;;              (setq-local electric-pair-inhibit-predicate
-  ;;                          `(lambda (c)
-  ;;                             (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
-  )
+     )
+
+(with-eval-after-load 'org
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((python . t)
+       (sql . t)
+	   (shell . t) ;; enables all shells: bash, zsh, sh, etc 
+       (emacs-lisp . t))))  ;; Keep emacs-lisp if you want to evaluate elisp in Org
 
 (use-package toc-org
   :commands toc-org-enable

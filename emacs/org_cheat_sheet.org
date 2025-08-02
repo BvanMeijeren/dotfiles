@@ -1,0 +1,70 @@
+* Org language compatibility blocks
+** SQL with org 
+#+BEGIN_SRC sql
+select * from table
+#+END_SRC
+
+*** Postgres block
+#+BEGIN_SRC sql :engine postgres :database mydb :user myuser :password mypass :host localhost :port 5432 :results value
+SELECT * FROM my_table;
+#+END_SRC
+
+** Python with org
+*** Regular Python output
+#+BEGIN_SRC python :results output
+x = 5
+print(x)
+#+END_SRC
+
+#+RESULTS:
+: 5
+
+*** Pandas block
+#+begin_src python :results value :exports both :colnames yes
+import pandas as pd
+
+data = {
+    "Name": ["Alice", "Bob", "Carol"],
+    "Age": [25, 30, 22]
+}
+df = pd.DataFrame(data)
+df
+#+END_SRC
+
+#+RESULTS:
+: None
+
+*** Python plot block
+#+begin_src python :results file :exports both :file plot.png
+import matplotlib.pyplot as plt
+
+plt.figure()
+plt.plot([1, 2, 3, 4], [10, 5, 8, 12])
+plt.title("My Plot")
+plt.savefig("plot.png")
+"plot.png"
+#+end_src
+
+#+RESULTS:
+[[file:plot.png]]
+
+** Shell with org 
+*** Compatibility test for shell 
+#+begin_src sh
+echo "Hello from shell"
+#+end_src
+
+#+RESULTS:
+: Hello from shell
+
+*** Reading a csv and output table
+#+begin_src shell :results output :exports both
+sqlite3 temp.db <<EOF
+.mode csv
+.import myfile.csv mytable
+.headers on
+SELECT * FROM mytable LIMIT 5;
+EOF
+#+end_src
+
+#+RESULTS:
