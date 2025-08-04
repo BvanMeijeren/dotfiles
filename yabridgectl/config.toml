@@ -1,0 +1,12 @@
+plugin_dirs = [
+    '/home/bastiaan/.wine/drive_c/Program Files/Common Files/Steinberg/VST2',
+    '/home/bastiaan/.wine/drive_c/Program Files/Common Files/VST3',
+    '/home/bastiaan/Documents/Plugins/vst',
+]
+vst2_location = 'centralized'
+no_verify = false
+blacklist = []
+
+[last_known_config]
+wine_version = 'wine-9.22 (Staging)'
+yabridge_host_hash = 7742505165074386169
