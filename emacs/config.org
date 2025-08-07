@@ -173,6 +173,11 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
                     "e l" '(consult-flymake :wk "Consult Flymake")
                     "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
                     "e r" '(eval-region :wk "Evaluate elisp in region"))
+    			  
+(start/leader-keys
+"c" '(:ignore t :wk "Code")
+"c q" '(my-sqlformat-buffer :wk "Format SQL buffer")
+"c i" '(indent-region :wk "Indents code properly"))
 
                   (start/leader-keys
                     "g" '(:ignore t :wk "Git")
@@ -332,23 +337,25 @@ Replace the default modeline with a prettier more useful.
 ** Smooth scrolling
 Control scrolling settings here. Speed and distance can be adjusted.
 #+BEGIN_SRC emacs-lisp
-(defun smooth-scroll-down ()
-  "Scroll down smoothly by half a page."
-  (interactive)
-  (dotimes (_ (/ (window-height) 8)) ;; Adjust this number for speed
-    (scroll-up 3)
-    (sit-for 0.0001)))  ;; Adds a small delay (in seconds)
+    ;;     (defun smooth-scroll-down ()
+    ;;       "Scroll down smoothly by half a page."
+    ;;       (interactive)
+    ;;       (dotimes (_ (/ (window-height) 8)) ;; Adjust this number for speed
+    ;;         (scroll-up 3)
+    ;;         ;; (sit-for 0.0001))
+    ;;     )  ;; Adds a small delay (in seconds)
 
-(defun smooth-scroll-up ()
-  "Scroll up smoothly by half a page."
-  (interactive)
-  (dotimes (_ (/ (window-height) 8))
-    (scroll-down 3)
-    (sit-for 0.0001)))  ;; Adds a small delay (in seconds)
+    ;;     (defun smooth-scroll-up ()
+    ;;       "Scroll up smoothly by half a page."
+    ;;       (interactive)
+    ;;       (dotimes (_ (/ (window-height) 8))
+    ;;         (scroll-down 3)
+    ;;         ;; (sit-for 0.0001))
+    ;; )  ;; Adds a small delay (in seconds)
 
-;; Bind them to the keys
-(define-key evil-normal-state-map (kbd "C-d") 'smooth-scroll-down)
-(define-key evil-normal-state-map (kbd "C-u") 'smooth-scroll-up)
+    ;;     ;; Bind them to the keys
+    ;;     (define-key evil-normal-state-map (kbd "C-d") 'smooth-scroll-down)
+    ;;     (define-key evil-normal-state-map (kbd "C-u") 'smooth-scroll-up)
 #+end_src
 
 * Development
@@ -384,24 +391,24 @@ If you can use a package manager just install the lsp server and add a hook.
 Use visual block to uncomment easily in Org documents (C-v).
 #+begin_src emacs-lisp
     (use-package eglot
-    	:ensure nil ;; `eglot` is built into Emacs 29, so no need to install
-    	:hook ((go-mode python-mode c-mode c++-mode sql-mode) . eglot-ensure) ;; Auto-start for these languages
-    	:custom
-    	(eglot-events-buffer-size 0)  ;; No event buffers
-    	(eglot-autoshutdown t)        ;; Shutdown unused servers
-    	(eglot-report-progress nil)   ;; Disable verbose LSP messages
-    	:config
-    	(add-to-list 'eglot-server-programs
-    				 '(go-mode . ("gopls"))) ;; Manually specify `gopls` for Go
-    	(add-to-list 'eglot-server-programs
-    				 '(python-mode . ("pyright-langserver" "--stdio"))) ;; Python
-    	(add-to-list 'eglot-server-programs ;; C
-    				 '(c-mode . ("clangd")))
-    	(add-to-list 'eglot-server-programs
-    	             '(c++-mode . ("clangd"))) ;; C++
-    	(add-to-list 'eglot-server-programs
-    				 '(sql-mode . ("sqls"))) ;; SQL language server
-    )
+      :ensure nil ;; `eglot` is built into Emacs 29, so no need to install
+      :hook ((go-mode python-mode c-mode c++-mode sql-mode nix-mode) . eglot-ensure) ;; Auto-start for these languages
+      :custom
+      (eglot-events-buffer-size 0)  ;; No event buffers
+      (eglot-autoshutdown t)        ;; Shutdown unused servers
+      (eglot-report-progress nil)   ;; Disable verbose LSP messages
+      :config
+      (add-to-list 'eglot-server-programs
+    			   '(go-mode . ("gopls"))) ;; Manually specify `gopls` for Go
+      (add-to-list 'eglot-server-programs
+    			   '(python-mode . ("pyright-langserver" "--stdio"))) ;; Python
+      (add-to-list 'eglot-server-programs ;; C
+    			   '(c-mode . ("clangd")))
+      (add-to-list 'eglot-server-programs
+    	           '(c++-mode . ("clangd"))) ;; C++
+      (add-to-list 'eglot-server-programs
+    			   '(sql-mode . ("sqls"))) ;; SQL language server
+      )
 #+end_src
 ** Yasnippet
 A template system for Emacs. And yasnippet-snippets is a snippet collection package.
@@ -414,13 +421,13 @@ To use it write out the full keyword (or use autocompletion) and press Tab.
 ** Eval buffers get automatic h-split
 Makes buffers like the output terminal for python script automatically placed horizontally with line height X.
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'display-buffer-alist
-             '("\\*.*\\*"  ;; Match all buffers with `*` in the name (adjust as needed)
-               (display-buffer-reuse-window display-buffer-in-side-window)
-               (side . bottom)    ;; Open at the bottom
-               (window-height . 12)))  ;; Set height to 12 lines
+    (add-to-list 'display-buffer-alist
+                 '("\\*.*\\*"  ;; Match all buffers with `*` in the name (adjust as needed)
+                   (display-buffer-reuse-window display-buffer-in-side-window)
+                   (side . bottom)    ;; Open at the bottom
+                   (window-height . 12)))  ;; Set height to 12 lines
 
-#+END_SRC
+                   #+END_SRC
 ** Language modes
 It's not required for every language like C,C++,C#,Java,Javascript etc. to install language mode packages,
 but for more specific languages it is necessary for syntax highlighting.
@@ -437,20 +444,20 @@ Use SPC-tab to uncomment the lines.
 
 *** Python mode 
 #+BEGIN_SRC emacs-lisp
-        (use-package python-mode
-          :mode "\\.py\\'") 
+    (use-package python-mode
+      :mode "\\.py\\'") 
 
-        (defun my-python-eval-region-or-line ()
-          "Evaluate the selected region or the current line in Python, displaying results in a small window."
-          (interactive)
-          (let ((output-buffer (get-buffer-create "*Python Output*"))
-                (code (if (use-region-p)
-                          (buffer-substring-no-properties (region-beginning) (region-end))
-                        (thing-at-point 'line t))))
-            (with-current-buffer output-buffer
-              (erase-buffer)) ;; Clear previous output
-            (python-shell-send-string code) ;; Removed output-buffer argument
-            (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
+    (defun my-python-eval-region-or-line ()
+      "Evaluate the selected region or the current line in Python, displaying results in a small window."
+      (interactive)
+      (let ((output-buffer (get-buffer-create "*Python Output*"))
+            (code (if (use-region-p)
+                      (buffer-substring-no-properties (region-beginning) (region-end))
+                    (thing-at-point 'line t))))
+        (with-current-buffer output-buffer
+          (erase-buffer)) ;; Clear previous output
+        (python-shell-send-string code) ;; Removed output-buffer argument
+        (display-buffer output-buffer '(display-buffer-below-selected . ((window-height . 10))))))
 
     (add-hook 'python-mode-hook
               (lambda ()
@@ -459,7 +466,7 @@ Use SPC-tab to uncomment the lines.
                             (lambda () (call-process "black" nil nil nil (buffer-file-name)))
                             )))
 
-(setq python-shell-interpreter "python3") ;; python3 as default interpreter for compatibility
+    (setq python-shell-interpreter "python3") ;; python3 as default interpreter for compatibility
 #+END_SRC
 
 *** SQL Mode
@@ -481,37 +488,33 @@ Arguments can be passed on to configure the pg_formatter options.
 Example: pg_format --spaces 2 --comma-start
 
 **** psql
-Also get psql (sometimes called postgresql, depending package manager).
+Also get psql (sometimes called postgre
+sql, depending package manager).
 
 **** SQL config
 #+BEGIN_SRC emacs-lisp
-                (require 'sql)
-                (setq sql-interactive-mode-hook
-                      (lambda ()
-                        (setq sql-ask-about-save nil)
-                        (setq sql-interactive-mode-prompt-regexp "^[^>]*> ")
-                        (setq sql-interactive-mode-output-destination 'buffer)))
+    (require 'sql)
+    (setq sql-interactive-mode-hook
+          (lambda ()
+            (setq sql-ask-about-save nil)
+            (setq sql-interactive-mode-prompt-regexp "^[^>]*> ")
+            (setq sql-interactive-mode-output-destination 'buffer)))
 
-                ;; Ensure SQL buffers have proper indentation and appearance
-                (add-hook 'sql-mode-hook
-                          (lambda ()
-                            (setq sql-indent-offset 2)  ;; Indentation level
-                            (display-line-numbers-mode)))  ;; Line numbers
-            
-        (defun my-sqlformat-buffer ()
-          "Format the current buffer with pg_format."
-          (interactive)
-          (when (executable-find "pg_format")
-            (let ((orig-point (point)))
-              (shell-command-on-region (point-min) (point-max) "pg_format --comma-start -"
-                                       (current-buffer) t)
-              (goto-char orig-point))))
+    ;; Ensure SQL buffers have proper indentation and appearance
+    (add-hook 'sql-mode-hook
+              (lambda ()
+                (setq sql-indent-offset 2)  ;; Indentation level
+                (display-line-numbers-mode)))  ;; Line numbers
 
-        (add-hook 'sql-mode-hook
-                  (lambda ()
-                    (eglot-ensure)
-                    (add-hook 'before-save-hook #'my-sqlformat-buffer nil t)))
-    
+    (defun my-sqlformat-buffer ()
+      "Format the current buffer with pg_format."
+      (interactive)
+      (when (executable-find "pg_format")
+        (let ((orig-point (point)))
+          (shell-command-on-region (point-min) (point-max) "pg_format --comma-start -"
+                                   (current-buffer) t)
+          (goto-char orig-point))))
+
     ;; Use this function to connect to redshift using environment variables    
     (defun my/sql-connect-redshift-env ()
       "Connect to Redshift using environment variables."
@@ -540,6 +543,11 @@ Also get psql (sometimes called postgresql, depending package manager).
   :hook ((before-save . gofmt-before-save))) ;; Auto-format before saving
 #+END_SRC
 
+*** Nix
+#+BEGIN_SRC emacs-lisp
+    (use-package nix-mode
+    )
+#+END_SRC
 ** Org Mode
 The greatest Emacs package of them all. Enables literate programming. Also good for documenting in markdown style.
 #+begin_src emacs-lisp
@@ -607,7 +615,7 @@ All the package setups that don't need much tweaking.
 For icons and more helpful UI.
 This is an icon set that can be used with dired, ibuffer and other Emacs programs.
 
-Don't forget to use nerd-icons-install-fonts!
+Run nerd-icons-install-fonts to get the proper icons for Emacs!!
 
 We use Nerd icons because it has more, better icons and all-the-icons only supports GUI.
 While nerd-icons supports both GUI and TUI.
