@@ -680,8 +680,8 @@ Notes:
       (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
       (corfu-auto t)                 ;; Enable auto completion
       (corfu-auto-prefix 2)          ;; Minimum length of prefix for auto completion.
-      (corfu-popupinfo-mode t)       ;; Enable popup information
-      (corfu-popupinfo-delay 0.5)    ;; Lower popupinfo delay to 0.5 seconds from 2 seconds
+      (corfu-popupinfo-mode nil)       ;; Enable popup information
+      (corfu-popupinfo-delay nil)    ;; Lower popupinfo delay to 0.5 seconds from 2 seconds
       (corfu-separator ?\s)          ;; Orderless field separator, Use M-SPC to enter separator
       ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
       ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match

@@ -1,0 +1,169 @@
+###################
+## SET SWAY VARS ##
+###################
+# Set terminal
+set $term foot
+
+# Set menu
+#set $menu wofi --show drun
+set $menu bemenu-run --fn $uifont -b -p "▶" --tf "$prompt" --hf "$highlight" --sf "$highlight" --scf "$highlight" | xargs swaymsg exec
+
+
+set $uifont "Ubuntu 14"
+set $highlight #3daee9
+set $prompt #18b218
+set $mod Mod4
+
+# Set DAW
+# set $daw = sh -c 'PIPEWIRE_LATENCY="128/48000" reaper'
+
+# Execute always
+#exec_always waybar
+
+# Workspaces
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+
+###################
+## ENV VARIABLES ##
+###################
+
+# env = variablename, value
+
+##################
+## KEY BINDINGS ##
+##################
+
+# Reload the config file
+bindsym Mod4+Shift+c reload
+
+# Exit sway (logout)
+bindsym Mod4+Shift+e exit
+
+# Kill focused window
+bindsym Mod4+q kill
+
+# Focus windows in a direction
+bindsym Mod4+h focus left
+bindsym Mod4+j focus down
+bindsym Mod4+k focus up
+bindsym Mod4+l focus right
+
+# Move windows in a direction
+bindsym Mod4+Shift+h move left
+bindsym Mod4+Shift+j move down
+bindsym Mod4+Shift+k move up
+bindsym Mod4+Shift+l move right
+
+# Split orientations
+bindsym Mod4+v split vertical
+bindsym Mod4+b split horizontal
+
+# Toggle fullscreen for focused window
+bindsym Mod4+f fullscreen toggle
+
+# Toggle floating for focused window
+bindsym Mod4+Shift+space floating toggle
+
+# Set focus follows mouse (optional)
+focus_follows_mouse yes
+
+# Set wallpaper (you can replace this with your preferred image)
+output * bg ~/Documents/Git/dotfiles/hypr/pianokeys.jpg fill
+
+# Mouse bindings for resizing and moving floating windows
+mode "resize" {
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+
+    # Exit resize mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+# bindsym Mod4+r mode "resize"
+
+# Enable clipboard integration (optional)
+exec_always --no-startup-id wl-copy
+
+# App key bindings
+bindsym Mod4+d exec $menu
+bindsym Mod4+s exec $term
+bindsym Mod4+r exec PIPEWIRE_LATENCY="128/48000" reaper
+
+# Bind keys to switch to workspaces
+bindsym Mod4+1 workspace $ws1
+bindsym Mod4+2 workspace $ws2
+bindsym Mod4+3 workspace $ws3
+bindsym Mod4+4 workspace $ws4
+bindsym Mod4+5 workspace $ws5
+
+# Move a container from workspace to workspace
+bindsym Mod4+Shift+1 move container to workspace $ws1
+bindsym Mod4+Shift+2 move container to workspace $ws2
+bindsym Mod4+Shift+3 move container to workspace $ws3
+bindsym Mod4+Shift+4 move container to workspace $ws4
+bindsym Mod4+Shift+5 move container to workspace $ws5
+
+###########
+## THEME ##
+###########
+
+# Gaps between windows (pixels)
+gaps inner 5
+gaps outer 5
+
+# Disable title bars on all windows
+for_window [app_id=".*"] border pixel 0
+
+# Set border to 2 pixels wide with custom colors
+default_border pixel 2
+
+# Focused window border (title bar) color - replace with your color
+client.focused          #4c7899 #285577 #ffffff #2e9ef4 #285577
+
+# Unfocused window border color
+client.unfocused        #333333 #222222 #888888 #292d2e #222222
+
+# Focused inactive window border color
+client.focused_inactive #5f676a #222222 #ffffff #484e50 #222222
+
+# Urgent window border color
+client.urgent           #2f343a #900000 #ffffff #900000 #900000
+
+bar {
+    mode hide
+    hidden_state hide
+    modifier $mod
+    font $uifont
+
+    # When the status_command prints a new line to stdout, swaybar updates.
+    # The default just shows the current date and time.
+    status_command while date +'%-d.%-m.%Y. %H:%M:%S %p'; do sleep 1; done
+
+    colors {
+        statusline #ffffff
+        background #121212
+        #background #00000000
+        focused_workspace #121212 #18b218 #232627
+        active_workspace #121212 $highlight #232627
+        inactive_workspace #121212 #7f8c8d #232627
+    }
+}
+# Titlebars
+#
+default_border pixel
+default_floating_border pixel
+hide_edge_borders smart
+#
+# Colors #93cee9
+#
+# class                     border  backgr. text  indicator child_border
+    client.focused          #4c7899 #285577 #ffffff $highlight $highlight
+    client.focused_inactive #333333 #5f676a #ffffff #484e50 #5f676a
+    client.unfocused        #333333 #222222 #888888 #292d2e #222222
+    client.urgent           #2f343a #900000 #ffffff #900000 #900000 
