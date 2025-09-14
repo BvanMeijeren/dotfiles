@@ -79,7 +79,9 @@ output * bg ~/.config/hypr/pianokeys.jpg fill
     bindsym $mod+d exec $menu
 
     # Start DAW
-    bindsym $mod+r exec $daw
+    # bindsym $mod+r exec $daw
+	# Launch Reaper with a specific PipeWire latency using Super+R
+	bindsym $mod+r exec sh -c 'PIPEWIRE_LATENCY=128/48000 reaper'
 
     # Kill program
     bindsym $mod+q kill 
@@ -239,14 +241,9 @@ default_floating_border none
 ## Status bar
 # Read `man 5 sway-bar` for more information about this section.
 bar {
-    position bottom 
+    position top
 	status_command ~/.config/sway/status.sh
 	
-	# Hide status bar when mod key not pressed
-	mode hide
-    hidden_state hide
-    modifier $mod
-
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
     # status_command while date +'%Y-%m-%d %X'; do sleep 1; done
