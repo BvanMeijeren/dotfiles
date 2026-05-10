@@ -100,6 +100,10 @@
   :config
   (evil-mode 1)
 
+  ;; force vim-style C-u scrolling
+  (define-key evil-normal-state-map (kbd "C-u") #'evil-scroll-up)
+  (define-key evil-motion-state-map (kbd "C-u") #'evil-scroll-up)
+
   (evil-set-initial-state 'eat-mode 'insert)
 
   :bind
