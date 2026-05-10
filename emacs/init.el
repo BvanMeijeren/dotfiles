@@ -191,9 +191,15 @@
     "tt" '(visual-line-mode :wk "Wrap lines")
     "tl" '(display-line-numbers-mode :wk "Line numbers"))
 
+  ;; Comment
+  (start/leader-keys
+    "c"  '(:ignore t :wk "Comment")
+    "cc" '(comment-line :wk "Toggle comment")
+    "cf" '(format-code :wk "Format code"))
+
   ;; Terminal
   (start/leader-keys
-    "s"  '(:ignore t :wk "Shell")
+    "S"  '(:ignore t :wk "Shell")
     "se" '(eat :wk "Eat")))
 
 ;;----------------------------------------------------------------------------
@@ -363,6 +369,28 @@
   (sql-mode . display-line-numbers-mode)
   :config
   (setq sql-indent-offset 2))
+
+;;----------------------------------------------------------------------------
+;; Formatting
+;;----------------------------------------------------------------------------
+
+(use-package format-all
+  :preface
+  (defun format-code ()
+    "Auto-format region if active, otherwise format whole buffer."
+    (interactive)
+    (if (derived-mode-p 'prolog-mode)
+        (prolog-indent-buffer)
+      (format-all-region-or-buffer)))
+  :config
+  (global-set-key (kbd "M-f") #'format-code)
+  (add-hook 'prog-mode-hook #'format-all-ensure-formatter)
+  ;; add formatters here
+  (add-hook 'python-mode-hook #'(lambda ()
+                                  (setq-local format-all-formatters '(("Python" yapf)))))
+  (add-hook 'sql-mode-hook #'(lambda ()
+                                  (setq-local format-all-formatters '(("SQL" pgformatter)))))
+)
 
 ;;----------------------------------------------------------------------------
 ;; Org
