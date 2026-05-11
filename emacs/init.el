@@ -337,7 +337,8 @@
     c-mode
     c++-mode
     sql-mode
-    nix-mode)
+    nix-mode
+    yaml-mode)
    . eglot-ensure)
 
   :custom
@@ -360,6 +361,9 @@
 
 (use-package python-mode
   :mode "\\.py\\'")
+
+(use-package yaml-mode
+  :mode "\\.yml\\'")
 
 (setq python-shell-interpreter "python3")
 
@@ -390,6 +394,10 @@
                                   (setq-local format-all-formatters '(("Python" yapf)))))
   (add-hook 'sql-mode-hook #'(lambda ()
                                   (setq-local format-all-formatters '(("SQL" pgformatter)))))
+  (add-hook 'lua-mode-hook #'(lambda ()
+                                  (setq-local format-all-formatters '(("Lua" luafmt)))))
+  (add-hook 'yaml-mode-hook #'(lambda ()
+                                  (setq-local format-all-formatters '(("Yaml" ymlfmt)))))
 )
 
 ;;----------------------------------------------------------------------------
@@ -439,8 +447,8 @@
 (use-package nerd-icons-dired
   :hook (dired-mode . nerd-icons-dired-mode))
 
-(use-package nerd-icons-ibuffer
-  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+;; (use-package nerd-icons-ibuffer
+;;  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 (use-package nerd-icons-completion
   :after marginalia
